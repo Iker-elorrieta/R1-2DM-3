@@ -3,13 +3,31 @@ package modelo;
 import java.util.Date;
 
 public class Cliente {
-
+	
+	private String id;
 	private String nombre;
 	private String apellidos;
 	private String email;
 	private String contrasena;
 	private Date fechaNacimiento;
 	private Boolean esEntrenador;
+	private int nivel;
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public int getNivel() {
+		return nivel;
+	}
+
+	public void setNivel(int nivel) {
+		this.nivel = nivel;
+	}
 
 	public String getNombre() {
 		return nombre;
@@ -61,19 +79,21 @@ public class Cliente {
 
 
 	public String toString() {
-		return "Cliente [nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email + ", contrasena="
-				+ contrasena + ", fechaNacimiento=" + fechaNacimiento + ", esEntrenador=" + esEntrenador + "]";
+		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
+				+ ", contrasena=" + contrasena + ", fechaNacimiento=" + fechaNacimiento + ", esEntrenador="
+				+ esEntrenador + ", nivel=" + nivel + "]";
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
-			Boolean esEntrenador) {
-		super();
+			Boolean esEntrenador, int nivel, String id) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
 		this.contrasena = contrasena;
 		this.fechaNacimiento = fechaNacimiento;
 		this.esEntrenador = esEntrenador;
+		this.nivel = nivel;
+		this.id = id;
 	}
 
 }

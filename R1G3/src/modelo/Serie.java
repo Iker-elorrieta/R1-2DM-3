@@ -5,6 +5,24 @@ public class Serie {
 	private String fotoSeries;
 	private String nomSeries;
 	private int numRepeticiones;
+	private String id;
+
+	public Serie(int cuentaatras, String fotoSeries, String nomSeries, int numRepeticiones, String id) {
+		super();
+		this.cuentaatras = cuentaatras;
+		this.fotoSeries = fotoSeries;
+		this.nomSeries = nomSeries;
+		this.numRepeticiones = numRepeticiones;
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public int getCuentaatras() {
 		return cuentaatras;

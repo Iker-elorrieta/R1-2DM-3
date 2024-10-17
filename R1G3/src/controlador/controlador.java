@@ -14,12 +14,16 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.CollectionReference;
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
 import com.google.cloud.firestore.QueryDocumentSnapshot;
 import com.google.cloud.firestore.QuerySnapshot;
 
 import conexion.Conexion;
 import modelo.Cliente;
+import modelo.Ejercicio;
+import modelo.Serie;
 import modelo.Workout;
 
 public class controlador {
@@ -54,11 +58,11 @@ public class controlador {
 					for (QueryDocumentSnapshot usuario : usuarios) {
 						if (usuario.getString(campoNombre).equals(panelLogin.getTxtFNombre().getText()) && usuario
 								.getString(campoContrasena).equals(panelLogin.getTxtFContrasena().getText())) {
+							double nivel = usuario.getDouble(campoNivel);
 							usuarioIniciado = new Cliente(usuario.getString(campoNombre),
 									usuario.getString(campoApellido), usuario.getString(campoEmail),
 									usuario.getString(campoContrasena), usuario.getDate(campoFecha),
-									usuario.getBoolean(campoEntrenador),
-									Integer.parseInt(usuario.getString(campoNivel)), usuario.getId());
+									usuario.getBoolean(campoEntrenador), (int) nivel, usuario.getId());
 						}
 					}
 					if (usuarioIniciado == null) {
@@ -98,14 +102,42 @@ public class controlador {
 
 	private ArrayList<Workout> cargarWorkouts() {
 		Firestore co = null;
-		ArrayList<Workout> workouts;
+		ArrayList<Workout> workouts = new ArrayList<Workout>();
+
 		try {
 			co = Conexion.conectar();
 			ApiFuture<QuerySnapshot> query = co.collection("Workouts").get();
 			QuerySnapshot querySnapshot = query.get();
 			List<QueryDocumentSnapshot> workoutsLista = querySnapshot.getDocuments();
 			for (QueryDocumentSnapshot workout : workoutsLista) {
+				ArrayList<Ejercicio> ejerciciosGuardados = new ArrayList<Ejercicio>();
+				DocumentReference workoutRef = workout.getReference();
+				CollectionReference ejercicios = workoutRef.collection("Ejercicios");
+				List<QueryDocumentSnapshot> ejerciciosLista = ejercicios.get().get().getDocuments();
+				for (QueryDocumentSnapshot ejercicio : ejerciciosLista) {
+					ArrayList<Serie> seriesGuardadas = new ArrayList<Serie>();
+					DocumentReference ejercicioRef = ejercicio.getReference();
+					CollectionReference series = ejercicioRef.collection("Series");
+					List<QueryDocumentSnapshot> seriesLista = series.get().get().getDocuments();
+					for (QueryDocumentSnapshot serie : seriesLista) {
+						double cuenta = serie.getDouble("cuenta_regresiva");
+						double repeticiones = serie.getDouble("num_repeticiones");
+						Serie nuevaSerie = new Serie((int) cuenta, serie.getString("foto_series"),
+								serie.getString("nom_series"), (int) repeticiones, serie.getId());
+						seriesGuardadas.add(nuevaSerie);
+					}
+					double cronometro = ejercicio.getDouble("cronometro");
+					double descanso = ejercicio.getDouble("descanso");
+					Ejercicio nuevoEjercicio = new Ejercicio((int) cronometro, ejercicio.getString("desc_ejer"),
+							(int) descanso, ejercicio.getString("nom_ejer"), ejercicio.getId(), seriesGuardadas);
+					ejerciciosGuardados.add(nuevoEjercicio);
 
+				}
+				double nivel = workout.getDouble("nivel_workout");
+				double numeroEjericios = workout.getDouble("numEjer_workout");
+				Workout nuevoWorkout = new Workout((int) nivel, workout.getString("nom_workout"), (int) numeroEjericios,
+						workout.getString("video_workout"), ejerciciosGuardados, workout.getId());
+				workouts.add(nuevoWorkout);
 			}
 		} catch (IOException | InterruptedException | ExecutionException e1) {
 			// TODO Auto-generated catch block

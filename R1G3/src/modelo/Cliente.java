@@ -146,7 +146,7 @@ public class Cliente {
 			usuarioNuevo.put(campoEmail, email);
 			usuarioNuevo.put(campoFecha, fechaNacimiento);
 			usuarioNuevo.put(campoContrasena, contrasena);
-			usuarioNuevo.put(campoNivel, String.valueOf(nivel));
+			usuarioNuevo.put(campoNivel, nivel);
 			usuarioNuevo.put(campoEntrenador, esEntrenador);
 			usuarios.add(usuarioNuevo);
 

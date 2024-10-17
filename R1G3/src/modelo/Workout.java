@@ -9,6 +9,25 @@ public class Workout {
 	private int numEjer;
 	private String video;
 	private ArrayList<Ejercicio> ejercicios;
+	private String id;
+
+	public Workout(int nivel, String nombre, int numEjer, String video, ArrayList<Ejercicio> ejercicios, String id) {
+		super();
+		this.nivel = nivel;
+		this.nombre = nombre;
+		this.numEjer = numEjer;
+		this.video = video;
+		this.ejercicios = ejercicios;
+		this.id = id;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
 
 	public int getNivel() {
 		return nivel;

@@ -75,16 +75,6 @@ public class PanelWorkouts extends JFrame {
 
 
 
-	public JPanel getContentPane() {
-		return contentPane;
-	}
-
-
-
-	public void setContentPane(JPanel contentPane) {
-		this.contentPane = contentPane;
-	}
-
 
 
 	public JLabel getLblPerfil() {
@@ -156,4 +146,5 @@ public class PanelWorkouts extends JFrame {
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPane = scrollPane;
 	}
+	
 }

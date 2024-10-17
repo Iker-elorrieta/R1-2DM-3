@@ -13,11 +13,11 @@ public class Principal {
 		// TODO Auto-generated method stub
 		try {
 
-			// Creamos el objeto vista.
+			
 			vista.PanelLogin ventanaPrincipal = new vista.PanelLogin();
 			ventanaPrincipal.setVisible(true);
 
-			// Creamos en controlador con acceso al modelo y la vista
+		
 			new controlador.controlador(ventanaPrincipal);
 
 		} catch (Exception e) {

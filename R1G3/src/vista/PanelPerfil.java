@@ -115,4 +115,52 @@ public class PanelPerfil extends JFrame {
 		panelPerfil.add(btnGuardarDatos);
 	}
 
+	public JTextField getTxtFNombre() {
+		return txtFNombre;
+	}
+
+	public void setTxtFNombre(JTextField txtFNombre) {
+		this.txtFNombre = txtFNombre;
+	}
+
+	public JTextField getTxtFApellidos() {
+		return txtFApellidos;
+	}
+
+	public void setTxtFApellidos(JTextField txtFApellidos) {
+		this.txtFApellidos = txtFApellidos;
+	}
+
+	public JTextField getTxtFEmail() {
+		return txtFEmail;
+	}
+
+	public void setTxtFEmail(JTextField txtFEmail) {
+		this.txtFEmail = txtFEmail;
+	}
+
+	public JTextField getTxtFFecha() {
+		return txtFFecha;
+	}
+
+	public void setTxtFFecha(JTextField txtFFecha) {
+		this.txtFFecha = txtFFecha;
+	}
+
+	public JTextField getTxtFContrasena() {
+		return txtFContrasena;
+	}
+
+	public void setTxtFContrasena(JTextField txtFContrasena) {
+		this.txtFContrasena = txtFContrasena;
+	}
+
+	public JButton getBtnGuardarDatos() {
+		return btnGuardarDatos;
+	}
+
+	public void setBtnGuardarDatos(JButton btnGuardarDatos) {
+		this.btnGuardarDatos = btnGuardarDatos;
+	}
+
 }

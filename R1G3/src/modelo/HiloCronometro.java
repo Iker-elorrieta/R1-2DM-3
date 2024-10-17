@@ -7,6 +7,7 @@ public class HiloCronometro extends Thread {
 	int minutos;
 	int segundos;
 	boolean terminar = false;
+	boolean parar = false;
 
 	public HiloCronometro(JLabel cronometro) {
 		// TODO Auto-generated constructor stub
@@ -21,12 +22,35 @@ public class HiloCronometro extends Thread {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			while (parar) {
+				try {
+					Thread.sleep(200);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			segundos++;
 			if (segundos == 60) {
 				minutos++;
 				segundos = 0;
 			}
-			cronometro.setText(minutos+":"+segundos);
+			cronometro.setText(minutos + ":" + segundos);
 		}
+	}
+
+	public void terminar() {
+		terminar = true;
+	}
+
+	public void cambiarEstado() {
+		if (parar) {
+
+			parar = false;
+		} else {
+
+			parar = true;
+		}
+
 	}
 }

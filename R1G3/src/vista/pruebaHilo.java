@@ -56,13 +56,23 @@ public class pruebaHilo extends JFrame {
 		
 		HiloCronometro h1 = new HiloCronometro(lblNewLabel);
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnParar = new JButton("Parar");
+		btnParar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				h1.cambiarEstado();
 			}
 		});
-		btnNewButton.setBounds(91, 191, 89, 23);
-		contentPane.add(btnNewButton);
+		btnParar.setBounds(36, 191, 89, 23);
+		contentPane.add(btnParar);
+		
+		JButton btnTerminar = new JButton("Terminar");
+		btnTerminar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				h1.terminar();
+			}
+		});
+		btnTerminar.setBounds(292, 191, 89, 23);
+		contentPane.add(btnTerminar);
 		h1.start();
 	}
 

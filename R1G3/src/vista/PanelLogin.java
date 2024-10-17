@@ -26,7 +26,7 @@ public class PanelLogin extends JFrame {
 
 	public PanelLogin() {
 
-		ImageIcon logo = new ImageIcon("img/EloFitness.png");
+		ImageIcon logo = new ImageIcon("img/EloFiteness.png");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 677, 510);
 		panelLogin = new JPanel();

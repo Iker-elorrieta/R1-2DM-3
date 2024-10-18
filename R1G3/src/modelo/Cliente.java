@@ -30,6 +30,7 @@ public class Cliente {
 	private int nivel;
 	private ArrayList<Workout> workouts;
 
+	
 	public ArrayList<Workout> getWorkouts() {
 		return workouts;
 	}

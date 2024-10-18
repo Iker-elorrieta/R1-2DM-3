@@ -27,6 +27,7 @@ public class PanelWorkouts extends JFrame {
 	public PanelWorkouts() {
 
 		ImageIcon perfil = new ImageIcon("img/perfilUsuario.jpg");
+		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 677, 510);
 		contentPane = new JPanel();
@@ -70,6 +71,8 @@ public class PanelWorkouts extends JFrame {
 		btnHistorial.setFont(new Font("Nirmala UI", Font.PLAIN, 15));
 		btnHistorial.setBounds(540, 171, 98, 29);
 		panelWorkout.add(btnHistorial);
+		
+
 		
 	}
 
@@ -146,5 +149,4 @@ public class PanelWorkouts extends JFrame {
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPane = scrollPane;
 	}
-	
 }

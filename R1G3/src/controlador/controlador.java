@@ -1,16 +1,23 @@
 package controlador;
 
+import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+
+import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import com.google.api.core.ApiFuture;
@@ -25,6 +32,7 @@ import modelo.Cliente;
 import modelo.Ejercicio;
 import modelo.Serie;
 import modelo.Workout;
+import vista.PanelEjercicio;
 
 public class controlador {
 	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -33,6 +41,7 @@ public class controlador {
 	private Cliente usuarioIniciado = null;
 	private vista.PanelPerfil panelPerfil;
 	private vista.PanelWorkouts panelWorkouts;
+	private vista.PanelEjercicio panelEjercicio;
 	private ArrayList<Workout> workouts;
 	private String campoNombre = "nom_usuario", campoApellido = "ap_usuario", campoEmail = "email_usuario",
 			campoFecha = "fechaNac_usuario", campoNivel = "nivel_usuario", campoEntrenador = "tipo_entrenador",
@@ -71,13 +80,55 @@ public class controlador {
 						panelWorkouts = new vista.PanelWorkouts();
 
 						panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
-
+						workouts = cargarWorkouts();
 						for (int i = -1; i != usuarioIniciado.getNivel(); i++) {
 							panelWorkouts.getCmbxFiltrarNivel().addItem(String.valueOf(i + 1));
 							panelWorkouts.revalidate();
 							panelWorkouts.repaint();
 						}
-						workouts = cargarWorkouts();
+						for (int i = 0; i <= workouts.size() - 1; i++) {
+							if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()) {
+								JLabel lblWorkout = new JLabel(i + " " + workouts.get(i).getNombre() + " Ejercicios: "
+										+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
+								lblWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 17));
+								lblWorkout.addMouseListener(new MouseAdapter() {
+									public void mouseClicked(MouseEvent e) {
+										panelEjercicio = new PanelEjercicio();
+										panelEjercicio.setVisible(true);
+										panelWorkouts.setVisible(false);
+									}
+								});
+								lblWorkout.setBounds(42, 141 + (40 * i), 349, 22);
+								panelWorkouts.getPanelWorkout().add(lblWorkout);
+
+								JLabel lblYoutube = new JLabel("");
+								lblYoutube.setToolTipText(String.valueOf(i));
+								lblYoutube.setBounds(423, 133 + (40 * i), 46, 39);
+								lblYoutube.addMouseListener(new MouseAdapter() {
+									public void mouseClicked(MouseEvent e) {
+
+										if (Desktop.isDesktopSupported()) {
+											Desktop desktop = Desktop.getDesktop();
+											try {
+												URI url = new URI(workouts
+														.get(Integer.parseInt(lblYoutube.getToolTipText())).getVideo());
+												desktop.browse(url);
+											} catch (IOException | URISyntaxException e1) {
+												// TODO Auto-generated catch block
+												e1.printStackTrace();
+											}
+										} else {
+											System.out.println(
+													"La funcionalidad de Desktop no está soportada en este sistema.");
+
+										}
+									}
+								});
+								lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
+								panelWorkouts.getPanelWorkout().add(lblYoutube);
+							}
+						}
+
 						panelWorkouts.setVisible(true);
 						panelLogin.setVisible(false);
 						inicializarWorkouts();
@@ -143,7 +194,7 @@ public class controlador {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		return null;
+		return workouts;
 	}
 
 	private void inicalizarRegistro() {

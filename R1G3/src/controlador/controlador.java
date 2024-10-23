@@ -55,7 +55,7 @@ public class controlador {
 	private HiloCronometro hiloEjercicio;
 	private HiloEsperar hiloEsperar;
 	private HiloRegresivo hiloSerie, hiloDescanso;
-	private int contEjercicios, cronometroParado, contSeries;
+	private int contEjercicios, cronometroParado, contSeries = 0;
 
 	public controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
@@ -332,27 +332,31 @@ public class controlador {
 						hiloEjercicio = new HiloCronometro(panelEjercicio.getLblCronometroEjercicio());
 						hiloEjercicio.start();
 						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie1(),
-								3);
+								ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
 						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
-								3);
+								ejercicioActivo.getDescanso());
+						hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
+								panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
+								contSeries);
 						contSeries++;
 					} else {
 						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie2(),
-								3);
+								ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
 						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
-								3);
+								ejercicioActivo.getDescanso());
+
+						hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
+								panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
+								contSeries);
 						contSeries = 0;
 						contEjercicios++;
 					}
 
-					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
-							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
-							contSeries);
 					hiloEsperar.start();
 					panelEjercicio.getBtnEmpezar().setBackground(Color.YELLOW);
 					panelEjercicio.getBtnEmpezar().setForeground(Color.BLACK);
 					panelEjercicio.getBtnEmpezar().setText("Parar");
-					
+
 				} else if (panelEjercicio.getBtnEmpezar().getText().equals("Parar")) {
 					if (hiloSerie.isAlive()) {
 						hiloSerie.cambiarEstado();
@@ -379,6 +383,13 @@ public class controlador {
 					panelEjercicio.getBtnEmpezar().setText("Parar");
 					hiloEjercicio.cambiarEstado();
 				}
+			}
+		});
+		panelEjercicio.getBtnSalir().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelEjercicio.dispose();
+				panelWorkouts.setVisible(true);
+				inicializarWorkouts();
 			}
 		});
 

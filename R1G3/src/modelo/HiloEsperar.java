@@ -36,7 +36,7 @@ public class HiloEsperar extends Thread {
 		}
 		System.out.println(ejercicioActivo.getSeries().size());
 		System.out.println(contSeries);
-		if (ejercicioActivo.getSeries().size() >= contSeries) {
+		if (ejercicioActivo.getSeries().size() > contSeries) {
 			botonEmpezar.setBackground(new Color(0, 128, 0));
 			botonEmpezar.setForeground(Color.WHITE);
 			botonEmpezar.setText("Siguiente Serie");

@@ -49,9 +49,9 @@ public class pruebaHilo extends JFrame {
 		
 	
 		
-		JLabel lblNewLabel = new JLabel("0:00\r\n");
+		JLabel lblNewLabel = new JLabel("Cronometro Workout:");
 		lblNewLabel.setFont(new Font("Rockwell", Font.PLAIN, 18));
-		lblNewLabel.setBounds(93, 88, 129, 41);
+		lblNewLabel.setBounds(93, 88, 273, 42);
 		contentPane.add(lblNewLabel);
 		
 		HiloCronometro h1 = new HiloCronometro(lblNewLabel);

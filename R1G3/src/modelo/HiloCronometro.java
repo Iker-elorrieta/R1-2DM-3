@@ -8,10 +8,12 @@ public class HiloCronometro extends Thread {
 	int segundos;
 	boolean terminar = false;
 	boolean parar = false;
+	String textoLabel = "";
 
 	public HiloCronometro(JLabel cronometro) {
 		// TODO Auto-generated constructor stub
 		this.cronometro = cronometro;
+		textoLabel = cronometro.getText();
 	}
 
 	public void run() {
@@ -35,7 +37,15 @@ public class HiloCronometro extends Thread {
 				minutos++;
 				segundos = 0;
 			}
-			cronometro.setText(minutos + ":" + segundos);
+			if (segundos < 10 && minutos < 10) {
+				cronometro.setText(textoLabel + 0 + minutos + ":" + 0 + segundos);
+			} else if (segundos >= 10 && minutos < 10) {
+				cronometro.setText(textoLabel + 0 + minutos + ":" + segundos);
+			} else if (segundos < 10 && minutos >= 10) {
+				cronometro.setText(textoLabel + minutos + ":" + 0 + segundos);
+			} else {
+				cronometro.setText(textoLabel  + minutos + ":" + segundos);
+			}
 		}
 	}
 
@@ -52,5 +62,29 @@ public class HiloCronometro extends Thread {
 			parar = true;
 		}
 
+	}
+
+	public JLabel getCronometro() {
+		return cronometro;
+	}
+
+	public void setCronometro(JLabel cronometro) {
+		this.cronometro = cronometro;
+	}
+
+	public int getMinutos() {
+		return minutos;
+	}
+
+	public void setMinutos(int minutos) {
+		this.minutos = minutos;
+	}
+
+	public int getSegundos() {
+		return segundos;
+	}
+
+	public void setSegundos(int segundos) {
+		this.segundos = segundos;
 	}
 }

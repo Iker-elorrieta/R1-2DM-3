@@ -1,5 +1,6 @@
 package controlador;
 
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -30,6 +31,9 @@ import com.google.cloud.firestore.QuerySnapshot;
 import conexion.Conexion;
 import modelo.Cliente;
 import modelo.Ejercicio;
+import modelo.HiloCronometro;
+import modelo.HiloEsperar;
+import modelo.HiloRegresivo;
 import modelo.Serie;
 import modelo.Workout;
 import vista.PanelEjercicio;
@@ -46,6 +50,12 @@ public class controlador {
 	private String campoNombre = "nom_usuario", campoApellido = "ap_usuario", campoEmail = "email_usuario",
 			campoFecha = "fechaNac_usuario", campoNivel = "nivel_usuario", campoEntrenador = "tipo_entrenador",
 			campoContrasena = "cont_usuario";
+	private Workout workoutElegido;
+	private HiloCronometro hiloWorkout;
+	private HiloCronometro hiloEjercicio;
+	private HiloEsperar hiloEsperar;
+	private HiloRegresivo hiloSerie, hiloDescanso;
+	private int contEjercicios, cronometroParado, contSeries;
 
 	public controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
@@ -90,13 +100,21 @@ public class controlador {
 							if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()) {
 								JLabel lblWorkout = new JLabel(i + " " + workouts.get(i).getNombre() + " Ejercicios: "
 										+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
+								lblWorkout.setToolTipText(String.valueOf(i));
 								lblWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 17));
 								lblWorkout.addMouseListener(new MouseAdapter() {
 									public void mouseClicked(MouseEvent e) {
 										panelEjercicio = new PanelEjercicio();
 										panelEjercicio.setVisible(true);
 										panelWorkouts.setVisible(false);
+
+										workoutElegido = workouts.get(Integer.parseInt(lblWorkout.getToolTipText()));
+										panelEjercicio.getLblNomWorkout().setText(workoutElegido.getNombre());
+										hiloWorkout = new HiloCronometro(panelEjercicio.getLblCronometroWorkout());
+										hiloWorkout.start();
+										inicializarEjercicios();
 									}
+
 								});
 								lblWorkout.setBounds(42, 141 + (40 * i), 349, 22);
 								panelWorkouts.getPanelWorkout().add(lblWorkout);
@@ -298,5 +316,71 @@ public class controlador {
 		}
 
 		return "";
+	}
+
+	private void inicializarEjercicios() {
+		// TODO Auto-generated method stub
+		panelEjercicio.getBtnEmpezar().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (panelEjercicio.getBtnEmpezar().getText().equals("Empezar")
+						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Ejercicio")
+						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Serie")) {
+
+					Ejercicio ejercicioActivo = workoutElegido.getEjercicios().get(contEjercicios);
+					panelEjercicio.getLblNomEjer().setText("Ejercicio: " + ejercicioActivo.getNombre());
+					if (contSeries == 0) {
+						hiloEjercicio = new HiloCronometro(panelEjercicio.getLblCronometroEjercicio());
+						hiloEjercicio.start();
+						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie1(),
+								3);
+						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
+								3);
+						contSeries++;
+					} else {
+						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie2(),
+								3);
+						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
+								3);
+						contSeries = 0;
+						contEjercicios++;
+					}
+
+					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
+							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
+							contSeries);
+					hiloEsperar.start();
+					panelEjercicio.getBtnEmpezar().setBackground(Color.YELLOW);
+					panelEjercicio.getBtnEmpezar().setForeground(Color.BLACK);
+					panelEjercicio.getBtnEmpezar().setText("Parar");
+					
+				} else if (panelEjercicio.getBtnEmpezar().getText().equals("Parar")) {
+					if (hiloSerie.isAlive()) {
+						hiloSerie.cambiarEstado();
+						cronometroParado = 1;
+					} else if (hiloDescanso.isAlive()) {
+						hiloDescanso.cambiarEstado();
+						cronometroParado = 2;
+
+					} else {
+						hiloSerie.cambiarEstado();
+						cronometroParado = 3;
+					}
+					hiloEjercicio.cambiarEstado();
+					panelEjercicio.getBtnEmpezar().setText("Reanudar");
+				} else if (panelEjercicio.getBtnEmpezar().getText().equals("Reanudar")) {
+					if (cronometroParado == 1) {
+						hiloSerie.cambiarEstado();
+					} else if (cronometroParado == 2) {
+						hiloDescanso.cambiarEstado();
+					} else {
+						hiloSerie.cambiarEstado();
+					}
+					cronometroParado = 0;
+					panelEjercicio.getBtnEmpezar().setText("Parar");
+					hiloEjercicio.cambiarEstado();
+				}
+			}
+		});
+
 	}
 }

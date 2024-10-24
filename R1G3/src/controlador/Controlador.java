@@ -45,14 +45,11 @@ public class Controlador {
 	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 	private vista.PanelLogin panelLogin;
 	private vista.PanelRegistro panelRegistro;
-	private Cliente usuarioIniciado = null;
+	private Cliente usuarioIniciado = new Cliente();
 	private vista.PanelPerfil panelPerfil;
 	private vista.PanelWorkouts panelWorkouts;
 	private vista.PanelEjercicio panelEjercicio;
 	private ArrayList<Workout> workouts;
-	private String campoNombre = "nom_usuario", campoApellido = "ap_usuario", campoEmail = "email_usuario",
-			campoFecha = "fechaNac_usuario", campoNivel = "nivel_usuario", campoEntrenador = "tipo_entrenador",
-			campoContrasena = "cont_usuario";
 	private Workout workoutElegido;
 	private HiloCronometro hiloWorkout;
 	private HiloCronometro hiloEjercicio;
@@ -76,45 +73,25 @@ public class Controlador {
 		// TODO Auto-generated method stub
 		this.panelLogin.getBtnIniciar().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Firestore co = null;
+				usuarioIniciado = usuarioIniciado.cargarCliente(panelLogin.getTxtFNombre().getText(),
+						panelLogin.getTxtFContrasena().getText());
+				if (usuarioIniciado == null) {
+					JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
+				} else {
+					panelWorkouts = new vista.PanelWorkouts();
 
-				try {
-					co = Conexion.conectar();
-					ApiFuture<QuerySnapshot> query = co.collection("Usuarios").get();
-					QuerySnapshot querySnapshot = query.get();
-					List<QueryDocumentSnapshot> usuarios = querySnapshot.getDocuments();
-					for (QueryDocumentSnapshot usuario : usuarios) {
-						if (usuario.getString(campoNombre).equals(panelLogin.getTxtFNombre().getText()) && usuario
-								.getString(campoContrasena).equals(panelLogin.getTxtFContrasena().getText())) {
-							double nivel = usuario.getDouble(campoNivel);
-							usuarioIniciado = new Cliente(usuario.getString(campoNombre),
-									usuario.getString(campoApellido), usuario.getString(campoEmail),
-									usuario.getString(campoContrasena), usuario.getDate(campoFecha),
-									usuario.getBoolean(campoEntrenador), (int) nivel, usuario.getId());
-						}
+					panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
+					workouts = cargarWorkouts();
+					for (int i = -1; i != usuarioIniciado.getNivel(); i++) {
+						panelWorkouts.getCmbxFiltrarNivel().addItem(String.valueOf(i + 1));
+						panelWorkouts.revalidate();
+						panelWorkouts.repaint();
 					}
-					if (usuarioIniciado == null) {
-						JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
-					} else {
-						panelWorkouts = new vista.PanelWorkouts();
+					rellenarWorkouts();
 
-						panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
-						workouts = cargarWorkouts();
-						for (int i = -1; i != usuarioIniciado.getNivel(); i++) {
-							panelWorkouts.getCmbxFiltrarNivel().addItem(String.valueOf(i + 1));
-							panelWorkouts.revalidate();
-							panelWorkouts.repaint();
-						}
-						rellenarWorkouts();
-
-						panelWorkouts.setVisible(true);
-						panelLogin.setVisible(false);
-						inicializarWorkouts();
-					}
-
-				} catch (IOException | InterruptedException | ExecutionException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					panelWorkouts.setVisible(true);
+					panelLogin.setVisible(false);
+					inicializarWorkouts();
 				}
 			}
 
@@ -307,7 +284,7 @@ public class Controlador {
 					}
 					Cliente nuevoCliente = new Cliente(componentes[0].getText(), componentes[1].getText(),
 							componentes[2].getText(), componentes[4].getText(), fecha, false, 0);
-					nuevoCliente.anadirContacto();
+					nuevoCliente.anadirCliente();
 
 					panelRegistro.dispose();
 					panelLogin.setVisible(true);
@@ -341,7 +318,7 @@ public class Controlador {
 					usuarioIniciado.setEmail(componentes[2].getText());
 					usuarioIniciado.setFechaNacimiento(fecha);
 					usuarioIniciado.setContrasena(componentes[4].getText());
-					usuarioIniciado.actualizarContacto();
+					usuarioIniciado.actualizarCliente();
 
 					panelPerfil.dispose();
 

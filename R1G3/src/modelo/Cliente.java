@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 
 import conexion.Conexion;
 
@@ -28,15 +30,14 @@ public class Cliente {
 	private Date fechaNacimiento;
 	private Boolean esEntrenador;
 	private int nivel;
-	private ArrayList<Workout> workouts;
+	private ArrayList<Historico> historico;
 
-	
-	public ArrayList<Workout> getWorkouts() {
-		return workouts;
+	public ArrayList<Historico> getWorkouts() {
+		return historico;
 	}
 
-	public void setWorkouts(ArrayList<Workout> workouts) {
-		this.workouts = workouts;
+	public void setWorkouts(ArrayList<Historico> workouts) {
+		this.historico = workouts;
 	}
 
 	public String getId() {
@@ -103,14 +104,17 @@ public class Cliente {
 		this.esEntrenador = esEntrenador;
 	}
 
+	
+
+	@Override
 	public String toString() {
 		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
 				+ ", contrasena=" + contrasena + ", fechaNacimiento=" + fechaNacimiento + ", esEntrenador="
-				+ esEntrenador + ", nivel=" + nivel + "]";
+				+ esEntrenador + ", nivel=" + nivel + ", historico=" + historico.get(0).toString() + "]";
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
-			Boolean esEntrenador, int nivel, String id) {
+			Boolean esEntrenador, int nivel, String id, ArrayList<Historico> historico) {
 		this.nombre = nombre;
 		this.apellidos = apellidos;
 		this.email = email;
@@ -119,6 +123,7 @@ public class Cliente {
 		this.esEntrenador = esEntrenador;
 		this.nivel = nivel;
 		this.id = id;
+		this.historico = historico;
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
@@ -133,7 +138,58 @@ public class Cliente {
 		this.nivel = nivel;
 	}
 
-	public void anadirContacto() {
+	public Cliente() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Cliente cargarCliente(String nombre, String contrasena) {
+		Cliente cliente = null;
+		Firestore co = null;
+
+		try {
+			co = Conexion.conectar();
+			ApiFuture<QuerySnapshot> query = co.collection("Usuarios").get();
+			QuerySnapshot querySnapshot = query.get();
+			List<QueryDocumentSnapshot> usuarios = querySnapshot.getDocuments();
+			for (QueryDocumentSnapshot usuario : usuarios) {
+				if (usuario.getString(campoNombre).equals(nombre)
+						&& usuario.getString(campoContrasena).equals(contrasena)) {
+					double nivel = usuario.getDouble(campoNivel);
+					cliente = new Cliente(usuario.getString(campoNombre), usuario.getString(campoApellido),
+							usuario.getString(campoEmail), usuario.getString(campoContrasena),
+							usuario.getDate(campoFecha), usuario.getBoolean(campoEntrenador), (int) nivel,
+							usuario.getId(), new ArrayList<Historico>());
+					List<QueryDocumentSnapshot> historicos = usuario.getReference().collection("Historico").get().get()
+							.getDocuments();
+
+					for (QueryDocumentSnapshot historico : historicos) {
+						Historico nuevoHistorico = new Historico(historico.getDouble("%ejerCompletados"),
+								historico.getDate("fecha_workout"));
+
+						double tiempoPrev = historico.getDouble("tiempo_previsto");
+						double tiempoTot = historico.getDouble("tiempo_total");
+						DocumentReference dirRef = (DocumentReference) historico.getData().get("id_work");
+						if (dirRef != null) {
+							nuevoHistorico.setNombre(dirRef.get().get().getString("nom_workout"));
+							double nivelWork = dirRef.get().get().getDouble("nivel_workout");
+							nuevoHistorico.setNivel((int) nivelWork);
+						}
+
+						nuevoHistorico.setTiempoPrevisto((int) tiempoPrev);
+						nuevoHistorico.setTiempototal((int) tiempoTot);
+						cliente.getWorkouts().add(nuevoHistorico);
+					}
+				}
+			}
+
+		} catch (IOException | InterruptedException | ExecutionException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return cliente;
+	}
+
+	public void anadirCliente() {
 		Firestore co = null;
 
 		try {
@@ -158,7 +214,7 @@ public class Cliente {
 
 	}
 
-	public void actualizarContacto() {
+	public void actualizarCliente() {
 		// TODO Auto-generated method stub
 		Firestore co = null;
 

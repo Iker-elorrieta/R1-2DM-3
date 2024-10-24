@@ -59,7 +59,8 @@ public class Controlador {
 	private HiloEsperar hiloEsperar;
 	private HiloRegresivo hiloSerie, hiloDescanso;
 	private int contEjercicios, cronometroParado, contSeries = 0;
-	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>();
+	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>(),
+			labelsFotos = new ArrayList<JLabel>();
 
 	public Controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
@@ -417,6 +418,13 @@ public class Controlador {
 							panelEjercicio.getPanelEjercicios().add(lblSerie);
 							labelsSeries.add(lblSerie);
 
+							JLabel lblFoto = new JLabel("");
+							lblFoto.setBounds(213, 125 + (74 * i), 46, 39);
+							lblFoto.setIcon(new ImageIcon(ejercicioActivo.getSeries().get(i).getFotoSeries()));
+							panelEjercicio.getPanelEjercicios().add(lblFoto);
+							labelsFotos.add(lblFoto);
+							panelEjercicio.getPanelEjercicios().repaint();
+							panelEjercicio.getPanelEjercicios().revalidate();
 						}
 					}
 					if (contSeries == 0) {
@@ -429,13 +437,13 @@ public class Controlador {
 							ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
 					hiloDescanso = new HiloRegresivo(panelEjercicio.getLblDescanso(), ejercicioActivo.getDescanso());
 					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
-							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
-							contSeries, labelsSeries, panelEjercicio.getPanelEjercicios());
+							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo, contSeries,
+							labelsSeries, panelEjercicio.getPanelEjercicios(), labelsFotos);
 					contSeries++;
 					if (contSeries == ejercicioActivo.getSeries().size()) {
 						contSeries = 0;
 						contEjercicios++;
-					
+
 					}
 
 					hiloEsperar.start();

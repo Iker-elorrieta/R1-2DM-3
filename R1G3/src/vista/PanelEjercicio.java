@@ -95,10 +95,6 @@ public class PanelEjercicio extends JFrame {
 
 	}
 
-
-
-	
-
 	public JPanel getPanelEjercicios() {
 		return panelEjercicios;
 	}

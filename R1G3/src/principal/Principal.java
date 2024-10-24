@@ -18,7 +18,7 @@ public class Principal {
 			ventanaPrincipal.setVisible(true);
 
 		
-			new controlador.controlador(ventanaPrincipal);
+			new controlador.Controlador(ventanaPrincipal);
 
 		} catch (Exception e) {
 			e.printStackTrace();

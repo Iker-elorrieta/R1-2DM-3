@@ -1,8 +1,13 @@
 package modelo;
 
 import java.awt.Color;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import controlador.Controlador;
 
 public class HiloEsperar extends Thread {
 
@@ -12,7 +17,9 @@ public class HiloEsperar extends Thread {
 	int contEjercicios, contSeries;
 	Workout workout;
 	Ejercicio ejercicioActivo;
-
+	ArrayList<JLabel> labels;
+	JPanel panelEjercicio;
+	Controlador controlador = new Controlador();
 	public void run() {
 		serie.start();
 		while (serie.isAlive()) {
@@ -53,6 +60,7 @@ public class HiloEsperar extends Thread {
 			contEjercicios++;
 			botonEmpezar.setBackground(new Color(0, 128, 0));
 			botonEmpezar.setForeground(Color.WHITE);
+			controlador.eliminarLabels(labels, panelEjercicio);
 			if (workout.getEjercicios().size() > contEjercicios) {
 				botonEmpezar.setText("Siguiente Ejercicio");
 
@@ -65,7 +73,8 @@ public class HiloEsperar extends Thread {
 	}
 
 	public HiloEsperar(HiloRegresivo serie, HiloRegresivo descanso, HiloCronometro hiloEjercicio, JButton botonEmpezar,
-			int contEjercicios, Workout workout, Ejercicio ejercicioActivo, int contSeries) {
+			int contEjercicios, Workout workout, Ejercicio ejercicioActivo, int contSeries, ArrayList<JLabel> labels,
+			JPanel panelEjercicio) {
 
 		this.serie = serie;
 		this.descanso = descanso;
@@ -74,7 +83,9 @@ public class HiloEsperar extends Thread {
 		this.contEjercicios = contEjercicios;
 		this.workout = workout;
 		this.ejercicioActivo = ejercicioActivo;
-		this.contSeries = contSeries ;
+		this.contSeries = contSeries;
+		this.labels = labels;
+		this.panelEjercicio = panelEjercicio;
 	}
 
 }

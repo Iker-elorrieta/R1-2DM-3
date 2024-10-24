@@ -13,7 +13,7 @@ public class HiloCronometro extends Thread {
 	public HiloCronometro(JLabel cronometro) {
 		// TODO Auto-generated constructor stub
 		this.cronometro = cronometro;
-		textoLabel = cronometro.getText().split(":")[0] + ":";
+		textoLabel = cronometro.getText().split(":")[0] + ": ";
 	}
 
 	public void run() {

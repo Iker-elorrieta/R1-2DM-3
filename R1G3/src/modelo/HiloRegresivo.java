@@ -8,6 +8,7 @@ public class HiloRegresivo extends Thread {
 	int segundos;
 	boolean terminar = false;
 	boolean parar = false;
+	String textoLabel;
 
 	public HiloRegresivo(JLabel cronometroRegresivo, int segundos) {
 		if (segundos >= 60) {
@@ -18,6 +19,7 @@ public class HiloRegresivo extends Thread {
 		}
 
 		this.cronometroRegresivo = cronometroRegresivo;
+		textoLabel = cronometroRegresivo.getText().split(":")[0] + ": ";
 	}
 
 	private int transformarTiempo(int segundos) {
@@ -52,7 +54,7 @@ public class HiloRegresivo extends Thread {
 				}
 			}
 
-			String txtCronometroReg = minutos + ":" + (segundos < 10 ? "0" + segundos : segundos);
+			String txtCronometroReg = textoLabel + minutos + ":" + (segundos < 10 ? "0" + segundos : segundos);
 			cronometroRegresivo.setText(txtCronometroReg);
 		}
 	}

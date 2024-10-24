@@ -22,6 +22,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
@@ -39,7 +41,7 @@ import modelo.Serie;
 import modelo.Workout;
 import vista.PanelEjercicio;
 
-public class controlador {
+public class Controlador {
 	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 	private vista.PanelLogin panelLogin;
 	private vista.PanelRegistro panelRegistro;
@@ -59,10 +61,14 @@ public class controlador {
 	private int contEjercicios, cronometroParado, contSeries = 0;
 	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>();
 
-	public controlador(vista.PanelLogin panelLogin) {
+	public Controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
 		this.panelLogin.setVisible(true);
 		this.inicializarControlador();
+	}
+
+	public Controlador() {
+		// TODO Auto-generated constructor stub
 	}
 
 	private void inicializarControlador() {
@@ -399,31 +405,37 @@ public class controlador {
 				if (panelEjercicio.getBtnEmpezar().getText().equals("Empezar")
 						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Ejercicio")
 						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Serie")) {
-
 					Ejercicio ejercicioActivo = workoutElegido.getEjercicios().get(contEjercicios);
-					panelEjercicio.getLblNomEjer().setText("Ejercicio: " + ejercicioActivo.getNombre());
+					if (labelsSeries.isEmpty()) {
+						for (int i = 0; i < ejercicioActivo.getSeries().size(); i++) {
+
+							JLabel lblSerie = new JLabel("Serie " + (i + 1) + ":");
+							lblSerie.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
+							lblSerie.setHorizontalAlignment(SwingConstants.CENTER);
+							lblSerie.setBounds(257, 125 + (74 * i), 151, 39);
+
+							panelEjercicio.getPanelEjercicios().add(lblSerie);
+							labelsSeries.add(lblSerie);
+
+						}
+					}
 					if (contSeries == 0) {
+						panelEjercicio.getLblNomEjer().setText("Ejercicio: " + ejercicioActivo.getNombre());
+
 						hiloEjercicio = new HiloCronometro(panelEjercicio.getLblCronometroEjercicio());
 						hiloEjercicio.start();
-						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie1(),
-								ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
-						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
-								ejercicioActivo.getDescanso());
-						hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
-								panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
-								contSeries);
-						contSeries++;
-					} else {
-						hiloSerie = new HiloRegresivo(panelEjercicio.getLblCronometroSerie2(),
-								ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
-						hiloDescanso = new HiloRegresivo(panelEjercicio.getLblCronometroDescanso(),
-								ejercicioActivo.getDescanso());
-
-						hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
-								panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
-								contSeries);
+					}
+					hiloSerie = new HiloRegresivo(labelsSeries.get(contSeries),
+							ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
+					hiloDescanso = new HiloRegresivo(panelEjercicio.getLblDescanso(), ejercicioActivo.getDescanso());
+					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
+							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo,
+							contSeries, labelsSeries, panelEjercicio.getPanelEjercicios());
+					contSeries++;
+					if (contSeries == ejercicioActivo.getSeries().size()) {
 						contSeries = 0;
 						contEjercicios++;
+					
 					}
 
 					hiloEsperar.start();
@@ -439,9 +451,6 @@ public class controlador {
 						hiloDescanso.cambiarEstado();
 						cronometroParado = 2;
 
-					} else {
-						hiloSerie.cambiarEstado();
-						cronometroParado = 3;
 					}
 					hiloEjercicio.cambiarEstado();
 					panelEjercicio.getBtnEmpezar().setText("Reanudar");
@@ -450,8 +459,6 @@ public class controlador {
 						hiloSerie.cambiarEstado();
 					} else if (cronometroParado == 2) {
 						hiloDescanso.cambiarEstado();
-					} else {
-						hiloSerie.cambiarEstado();
 					}
 					cronometroParado = 0;
 					panelEjercicio.getBtnEmpezar().setText("Parar");
@@ -469,7 +476,7 @@ public class controlador {
 
 	}
 
-	private void eliminarLabels(ArrayList<JLabel> labels, JPanel panel) {
+	public void eliminarLabels(ArrayList<JLabel> labels, JPanel panel) {
 		for (JLabel label : labels) {
 			panel.remove(label);
 			panel.repaint();

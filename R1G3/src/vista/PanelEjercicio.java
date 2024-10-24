@@ -9,13 +9,13 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.JScrollPane;
 
 public class PanelEjercicio extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JLabel lblCronometroWorkout, lblNomEjer, lblNomWorkout, lblCronometroEjercicio, lblDescanso, lblSerie1,
-			lblSerie2, lblCronometroSerie2, lblCronometroSerie1, lblCronometroDescanso;
+	private JPanel contentPane, panelEjercicios;
+	private JLabel lblCronometroWorkout, lblNomEjer, lblNomWorkout, lblCronometroEjercicio, lblDescanso;
 	private JButton btnEmpezar, btnSalir;
 
 	public static void main(String[] args) {
@@ -41,102 +41,70 @@ public class PanelEjercicio extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(0, 0, 661, 471);
+		contentPane.add(scrollPane);
+
+		panelEjercicios = new JPanel();
+		panelEjercicios.setBackground(new Color(255, 255, 255));
+		scrollPane.setViewportView(panelEjercicios);
+		panelEjercicios.setLayout(null);
+
 		lblCronometroWorkout = new JLabel("Cronometro Workout: ");
 		lblCronometroWorkout.setHorizontalAlignment(SwingConstants.CENTER);
 		lblCronometroWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblCronometroWorkout.setBounds(10, 11, 198, 84);
-		contentPane.add(lblCronometroWorkout);
+		panelEjercicios.add(lblCronometroWorkout);
 
 		lblNomEjer = new JLabel("Ejercicio :");
 		lblNomEjer.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNomEjer.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblNomEjer.setBounds(237, 11, 198, 84);
-		contentPane.add(lblNomEjer);
+		panelEjercicios.add(lblNomEjer);
 
 		lblNomWorkout = new JLabel("");
 		lblNomWorkout.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNomWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblNomWorkout.setBounds(449, 11, 198, 84);
-		contentPane.add(lblNomWorkout);
+		panelEjercicios.add(lblNomWorkout);
 
 		lblCronometroEjercicio = new JLabel("Cronometro Ejercicio:");
 		lblCronometroEjercicio.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblCronometroEjercicio.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCronometroEjercicio.setBounds(10, 126, 366, 26);
-		contentPane.add(lblCronometroEjercicio);
+		panelEjercicios.add(lblCronometroEjercicio);
 
 		lblDescanso = new JLabel("Descanso:");
 		lblDescanso.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblDescanso.setBounds(10, 163, 77, 53);
-		contentPane.add(lblDescanso);
-
-		lblSerie1 = new JLabel("Serie 1:");
-		lblSerie1.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblSerie1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSerie1.setBounds(215, 177, 151, 39);
-		contentPane.add(lblSerie1);
-
-		lblSerie2 = new JLabel("Serie 2:");
-		lblSerie2.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblSerie2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblSerie2.setBounds(215, 251, 151, 39);
-		contentPane.add(lblSerie2);
+		lblDescanso.setBounds(10, 163, 178, 53);
+		panelEjercicios.add(lblDescanso);
 
 		btnEmpezar = new JButton("Empezar");
 		btnEmpezar.setBackground(new Color(0, 128, 0));
 		btnEmpezar.setForeground(Color.WHITE);
 		btnEmpezar.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		btnEmpezar.setBounds(107, 395, 151, 49);
-		contentPane.add(btnEmpezar);
+		panelEjercicios.add(btnEmpezar);
 
 		btnSalir = new JButton("Salir");
 		btnSalir.setBackground(Color.RED);
 		btnSalir.setForeground(Color.WHITE);
 		btnSalir.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		btnSalir.setBounds(422, 395, 151, 49);
-		contentPane.add(btnSalir);
-
-		lblCronometroSerie2 = new JLabel("");
-		lblCronometroSerie2.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCronometroSerie2.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblCronometroSerie2.setBounds(265, 251, 151, 39);
-		contentPane.add(lblCronometroSerie2);
-
-		lblCronometroSerie1 = new JLabel("");
-		lblCronometroSerie1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblCronometroSerie1.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblCronometroSerie1.setBounds(265, 177, 151, 39);
-		contentPane.add(lblCronometroSerie1);
-
-		lblCronometroDescanso = new JLabel("");
-		lblCronometroDescanso.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
-		lblCronometroDescanso.setBounds(102, 175, 106, 32);
-		contentPane.add(lblCronometroDescanso);
+		panelEjercicios.add(btnSalir);
 
 	}
 
-	public JLabel getLblCronometroSerie2() {
-		return lblCronometroSerie2;
+
+
+	
+
+	public JPanel getPanelEjercicios() {
+		return panelEjercicios;
 	}
 
-	public void setLblCronometroSerie2(JLabel lblCronometroSerie2) {
-		this.lblCronometroSerie2 = lblCronometroSerie2;
-	}
-
-	public JLabel getLblCronometroSerie1() {
-		return lblCronometroSerie1;
-	}
-
-	public void setLblCronometroSerie1(JLabel lblCronometroSerie1) {
-		this.lblCronometroSerie1 = lblCronometroSerie1;
-	}
-
-	public JLabel getLblCronometroDescanso() {
-		return lblCronometroDescanso;
-	}
-
-	public void setLblCronometroDescanso(JLabel lblCronometroDescanso) {
-		this.lblCronometroDescanso = lblCronometroDescanso;
+	public void setPanelEjercicios(JPanel panelEjercicios) {
+		this.panelEjercicios = panelEjercicios;
 	}
 
 	public JButton getBtnEmpezar() {
@@ -185,22 +153,6 @@ public class PanelEjercicio extends JFrame {
 
 	public void setLblDescanso(JLabel lblDescanso) {
 		this.lblDescanso = lblDescanso;
-	}
-
-	public JLabel getLblSerie1() {
-		return lblSerie1;
-	}
-
-	public void setLblSerie1(JLabel lblSerie1) {
-		this.lblSerie1 = lblSerie1;
-	}
-
-	public JLabel getLblSerie2() {
-		return lblSerie2;
-	}
-
-	public void setLblSerie2(JLabel lblSerie2) {
-		this.lblSerie2 = lblSerie2;
 	}
 
 	public JLabel getLblCronometroWorkout() {

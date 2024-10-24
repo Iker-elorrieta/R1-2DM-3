@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.CollectionReference;
@@ -56,6 +57,7 @@ public class controlador {
 	private HiloEsperar hiloEsperar;
 	private HiloRegresivo hiloSerie, hiloDescanso;
 	private int contEjercicios, cronometroParado, contSeries = 0;
+	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>();
 
 	public controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
@@ -96,56 +98,7 @@ public class controlador {
 							panelWorkouts.revalidate();
 							panelWorkouts.repaint();
 						}
-						for (int i = 0; i <= workouts.size() - 1; i++) {
-							if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()) {
-								JLabel lblWorkout = new JLabel(i + " " + workouts.get(i).getNombre() + " Ejercicios: "
-										+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
-								lblWorkout.setToolTipText(String.valueOf(i));
-								lblWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 17));
-								lblWorkout.addMouseListener(new MouseAdapter() {
-									public void mouseClicked(MouseEvent e) {
-										panelEjercicio = new PanelEjercicio();
-										panelEjercicio.setVisible(true);
-										panelWorkouts.setVisible(false);
-
-										workoutElegido = workouts.get(Integer.parseInt(lblWorkout.getToolTipText()));
-										panelEjercicio.getLblNomWorkout().setText(workoutElegido.getNombre());
-										hiloWorkout = new HiloCronometro(panelEjercicio.getLblCronometroWorkout());
-										hiloWorkout.start();
-										inicializarEjercicios();
-									}
-
-								});
-								lblWorkout.setBounds(42, 141 + (40 * i), 349, 22);
-								panelWorkouts.getPanelWorkout().add(lblWorkout);
-
-								JLabel lblYoutube = new JLabel("");
-								lblYoutube.setToolTipText(String.valueOf(i));
-								lblYoutube.setBounds(423, 133 + (40 * i), 46, 39);
-								lblYoutube.addMouseListener(new MouseAdapter() {
-									public void mouseClicked(MouseEvent e) {
-
-										if (Desktop.isDesktopSupported()) {
-											Desktop desktop = Desktop.getDesktop();
-											try {
-												URI url = new URI(workouts
-														.get(Integer.parseInt(lblYoutube.getToolTipText())).getVideo());
-												desktop.browse(url);
-											} catch (IOException | URISyntaxException e1) {
-												// TODO Auto-generated catch block
-												e1.printStackTrace();
-											}
-										} else {
-											System.out.println(
-													"La funcionalidad de Desktop no está soportada en este sistema.");
-
-										}
-									}
-								});
-								lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
-								panelWorkouts.getPanelWorkout().add(lblYoutube);
-							}
-						}
+						rellenarWorkouts();
 
 						panelWorkouts.setVisible(true);
 						panelLogin.setVisible(false);
@@ -167,6 +120,119 @@ public class controlador {
 				inicalizarRegistro();
 			}
 		});
+	}
+
+	private void rellenarWorkouts() {
+		// TODO Auto-generated method stub
+		for (int i = 0; i <= workouts.size() - 1; i++) {
+
+			if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()) {
+				JLabel lblWorkout = new JLabel(i + " " + workouts.get(i).getNombre() + " Ejercicios: "
+						+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
+				lblWorkout.setToolTipText(String.valueOf(i));
+				lblWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 17));
+				lblWorkout.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						panelEjercicio = new PanelEjercicio();
+						panelEjercicio.setVisible(true);
+						panelWorkouts.setVisible(false);
+
+						workoutElegido = workouts.get(Integer.parseInt(lblWorkout.getToolTipText()));
+						panelEjercicio.getLblNomWorkout().setText(workoutElegido.getNombre());
+						hiloWorkout = new HiloCronometro(panelEjercicio.getLblCronometroWorkout());
+						hiloWorkout.start();
+						inicializarEjercicios();
+					}
+
+				});
+				lblWorkout.setBounds(42, 141 + (40 * i), 349, 22);
+				panelWorkouts.getPanelWorkout().add(lblWorkout);
+
+				JLabel lblYoutube = new JLabel("");
+				lblYoutube.setToolTipText(String.valueOf(i));
+				lblYoutube.setBounds(423, 133 + (40 * i), 46, 39);
+				lblYoutube.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+
+						if (Desktop.isDesktopSupported()) {
+							Desktop desktop = Desktop.getDesktop();
+							try {
+								URI url = new URI(
+										workouts.get(Integer.parseInt(lblYoutube.getToolTipText())).getVideo());
+								desktop.browse(url);
+							} catch (IOException | URISyntaxException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} else {
+							System.out.println("La funcionalidad de Desktop no está soportada en este sistema.");
+
+						}
+					}
+				});
+				lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
+				panelWorkouts.getPanelWorkout().add(lblYoutube);
+				labelsWorkout.add(lblYoutube);
+				labelsWorkout.add(lblWorkout);
+			}
+		}
+	}
+
+	private void rellenarWorkoutsFiltrado(int nivel) {
+		int o = 0;
+		for (int i = 0; i <= workouts.size() - 1; i++) {
+
+			if (nivel == workouts.get(i).getNivel()) {
+				JLabel lblWorkout = new JLabel(o + 1 + " " + workouts.get(i).getNombre() + " Ejercicios: "
+						+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
+				lblWorkout.setToolTipText(String.valueOf(i));
+				lblWorkout.setFont(new Font("Nirmala UI", Font.PLAIN, 17));
+				lblWorkout.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+						panelEjercicio = new PanelEjercicio();
+						panelEjercicio.setVisible(true);
+						panelWorkouts.setVisible(false);
+
+						workoutElegido = workouts.get(Integer.parseInt(lblWorkout.getToolTipText()));
+						panelEjercicio.getLblNomWorkout().setText(workoutElegido.getNombre());
+						hiloWorkout = new HiloCronometro(panelEjercicio.getLblCronometroWorkout());
+						hiloWorkout.start();
+						inicializarEjercicios();
+					}
+
+				});
+				lblWorkout.setBounds(42, 141 + (40 * o), 349, 22);
+				panelWorkouts.getPanelWorkout().add(lblWorkout);
+
+				JLabel lblYoutube = new JLabel("");
+				lblYoutube.setToolTipText(String.valueOf(i));
+				lblYoutube.setBounds(423, 133 + (40 * o), 46, 39);
+				lblYoutube.addMouseListener(new MouseAdapter() {
+					public void mouseClicked(MouseEvent e) {
+
+						if (Desktop.isDesktopSupported()) {
+							Desktop desktop = Desktop.getDesktop();
+							try {
+								URI url = new URI(
+										workouts.get(Integer.parseInt(lblYoutube.getToolTipText())).getVideo());
+								desktop.browse(url);
+							} catch (IOException | URISyntaxException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}
+						} else {
+							System.out.println("La funcionalidad de Desktop no está soportada en este sistema.");
+
+						}
+					}
+				});
+				lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
+				panelWorkouts.getPanelWorkout().add(lblYoutube);
+				labelsWorkout.add(lblYoutube);
+				labelsWorkout.add(lblWorkout);
+				o++;
+			}
+		}
 	}
 
 	private ArrayList<Workout> cargarWorkouts() {
@@ -294,6 +360,14 @@ public class controlador {
 				inicializarPerfil();
 			}
 		});
+
+		panelWorkouts.getCmbxFiltrarNivel().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				eliminarLabels(labelsWorkout, panelWorkouts.getPanelWorkout());
+				rellenarWorkoutsFiltrado(
+						Integer.parseInt((String) panelWorkouts.getCmbxFiltrarNivel().getSelectedItem()));
+			}
+		});
 	}
 
 	private String comprobarError(JTextField[] componentes) {
@@ -393,5 +467,14 @@ public class controlador {
 			}
 		});
 
+	}
+
+	private void eliminarLabels(ArrayList<JLabel> labels, JPanel panel) {
+		for (JLabel label : labels) {
+			panel.remove(label);
+			panel.repaint();
+			panel.revalidate();
+		}
+		labels.clear();
 	}
 }

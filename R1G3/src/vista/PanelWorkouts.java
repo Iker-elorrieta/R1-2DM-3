@@ -19,6 +19,10 @@ public class PanelWorkouts extends JFrame {
 	private JLabel lblPerfil, lblNivel;
 	private JPanel panelWorkout;
 	private JButton btnHistorial;
+	
+
+
+
 	private JComboBox<String> cmbxFiltrarNivel;
 	private JScrollPane scrollPane;
 

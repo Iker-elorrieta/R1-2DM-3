@@ -37,6 +37,7 @@ import modelo.Ejercicio;
 import modelo.HiloCronometro;
 import modelo.HiloEsperar;
 import modelo.HiloRegresivo;
+import modelo.Historico;
 import modelo.Serie;
 import modelo.Workout;
 import vista.PanelEjercicio;
@@ -58,6 +59,7 @@ public class Controlador {
 	private int contEjercicios, cronometroParado, contSeries = 0;
 	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>(),
 			labelsFotos = new ArrayList<JLabel>();
+	private ArrayList<Integer> tiemposEjercicio = new ArrayList<Integer>();
 
 	public Controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
@@ -415,7 +417,7 @@ public class Controlador {
 					hiloDescanso = new HiloRegresivo(panelEjercicio.getLblDescanso(), ejercicioActivo.getDescanso());
 					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
 							panelEjercicio.getBtnEmpezar(), contEjercicios, workoutElegido, ejercicioActivo, contSeries,
-							labelsSeries, panelEjercicio.getPanelEjercicios(), labelsFotos);
+							labelsSeries, panelEjercicio.getPanelEjercicios(), labelsFotos, tiemposEjercicio);
 					contSeries++;
 					if (contSeries == ejercicioActivo.getSeries().size()) {
 						contSeries = 0;
@@ -456,6 +458,36 @@ public class Controlador {
 				panelEjercicio.dispose();
 				panelWorkouts.setVisible(true);
 				inicializarWorkouts();
+				if (hiloSerie.isAlive()) {
+					hiloSerie.terminar();
+				}
+				if (hiloDescanso.isAlive()) {
+					hiloDescanso.terminar();
+				}
+				if (hiloEjercicio.isAlive()) {
+					hiloEjercicio.terminar();
+				}
+				if (hiloWorkout.isAlive()) {
+					hiloWorkout.terminar();
+				}
+				if (contEjercicios > 0) {
+					int tiempoTotal = 0;
+					int tiempoEstimado = 0;
+					double porcentaje = (100 * contEjercicios) / workoutElegido.getEjercicios().size();
+					for (Integer tiempo : tiemposEjercicio) {
+						tiempoTotal += tiempo;
+					}
+					for (Ejercicio ejercicio : workoutElegido.getEjercicios()) {
+						for (Serie serie : ejercicio.getSeries()) {
+							tiempoEstimado += serie.getCuentaatras();
+							tiempoEstimado += ejercicio.getDescanso();
+						}
+					}
+					Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
+							workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date());
+					historico.anadirHistorico(usuarioIniciado, workoutElegido);
+					usuarioIniciado.getWorkouts().add(historico);
+				}
 			}
 		});
 

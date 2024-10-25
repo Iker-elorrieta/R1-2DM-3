@@ -20,6 +20,7 @@ public class HiloEsperar extends Thread {
 	ArrayList<JLabel> labels, fotos;
 	JPanel panelEjercicio;
 	Controlador controlador = new Controlador();
+	ArrayList<Integer> tiemposEjercicio = new ArrayList<Integer>();
 
 	public void run() {
 		serie.start();
@@ -48,6 +49,7 @@ public class HiloEsperar extends Thread {
 			botonEmpezar.setText("Siguiente Serie");
 		} else {
 			hiloEjercicio.terminar();
+			tiemposEjercicio.add((hiloEjercicio.getMinutos() * 60) + hiloEjercicio.getSegundos());
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -74,7 +76,7 @@ public class HiloEsperar extends Thread {
 
 	public HiloEsperar(HiloRegresivo serie, HiloRegresivo descanso, HiloCronometro hiloEjercicio, JButton botonEmpezar,
 			int contEjercicios, Workout workout, Ejercicio ejercicioActivo, int contSeries, ArrayList<JLabel> labels,
-			JPanel panelEjercicio, ArrayList<JLabel> fotos) {
+			JPanel panelEjercicio, ArrayList<JLabel> fotos, ArrayList<Integer> tiemposEjercicio) {
 
 		this.serie = serie;
 		this.descanso = descanso;
@@ -87,6 +89,7 @@ public class HiloEsperar extends Thread {
 		this.labels = labels;
 		this.panelEjercicio = panelEjercicio;
 		this.fotos = fotos;
+		this.tiemposEjercicio = tiemposEjercicio;
 	}
 
 }

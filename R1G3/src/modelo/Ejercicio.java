@@ -1,17 +1,31 @@
 package modelo;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
-public class Ejercicio {
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.DocumentReference;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 
+import conexion.Conexion;
+
+public class Ejercicio implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 	private int cronometro;
 	private String descripcion;
 	private int descanso;
 	private String nombre;
 	private String id;
 	private ArrayList<Serie> series;
+	private String campoDescrip = "desc_ejer", campocronometro = "cronometro", campodescanso = "descanso",
+			collectionName = "Ejercicios";
 
-	
 	public Ejercicio(int cronometro, String descripcion, int descanso, String nombre, String id,
 			ArrayList<Serie> series) {
 		super();
@@ -75,4 +89,39 @@ public class Ejercicio {
 		this.series = series;
 	}
 
+	public ArrayList<Ejercicio> mObtenerEjercicios(String coleccionRoot, String nombreWorkout) {
+		Firestore co = null;
+		ArrayList<Ejercicio> listaEjercicios = new ArrayList<>();
+		try {
+			co = Conexion.conectar();
+
+			DocumentReference workOutDoc = co.collection(coleccionRoot).document(nombreWorkout);
+			ApiFuture<QuerySnapshot> ejerciciosFuture = workOutDoc.collection(collectionName).get();
+			QuerySnapshot ejerciciosSnapshot = ejerciciosFuture.get();
+			List<QueryDocumentSnapshot> ejercicios = ejerciciosSnapshot.getDocuments();
+			for (QueryDocumentSnapshot ejercicio : ejercicios) {
+
+				double descanso = ejercicio.getDouble(campodescanso);
+				double cronometro = ejercicio.getDouble(campocronometro);
+
+				Ejercicio e = new Ejercicio();
+				e.setNombre(ejercicio.getId());
+				e.setDescripcion(ejercicio.getString(campoDescrip));
+				e.setDescanso((int) descanso);
+				e.setCronometro((int) cronometro);
+				e.setSeries(new Serie().mObtenerSeries(coleccionRoot, collectionName, e.getNombre(), nombreWorkout));
+
+				listaEjercicios.add(e);
+			}
+			co.close();
+		} catch (InterruptedException | ExecutionException | IOException e) {
+			System.out.println("Error: Clase Ejercicio, método mObtenerEjercicios");
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return listaEjercicios;
+	}
 }

@@ -20,7 +20,7 @@ public class Historico {
 	private Date fecha;
 
 	public Historico(double porcentaje, String nombre, int nivel, int tiempoPrevisto, int tiempototal, Date fecha) {
-		
+
 		this.porcentaje = porcentaje;
 		this.nombre = nombre;
 		this.nivel = nivel;
@@ -111,6 +111,16 @@ public class Historico {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		try {
+			co.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void actualizarHistorico(Cliente usuarioIniciado, Workout workoutElegido) {
+		// TODO Auto-generated method stub
 
 	}
 }

@@ -8,8 +8,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,9 +82,9 @@ public class Controlador {
 				if (usuarioIniciado == null) {
 					JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
 				} else {
-
+					GenerarBackups.main(null);
 					panelWorkouts = new vista.PanelWorkouts();
-					
+
 					panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
 					workouts = cargarWorkouts();
 					for (int i = -1; i != usuarioIniciado.getNivel(); i++) {
@@ -484,10 +486,33 @@ public class Controlador {
 							tiempoEstimado += ejercicio.getDescanso();
 						}
 					}
-					Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
-							workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date());
-					historico.anadirHistorico(usuarioIniciado, workoutElegido);
-					usuarioIniciado.getWorkouts().add(historico);
+					int cont = 0;
+					boolean encontrado = false;
+					for (Historico historico : usuarioIniciado.getWorkouts()) {
+						if (historico.getNombre().equals(workoutElegido.getNombre())) {
+
+							usuarioIniciado.getWorkouts().get(cont).setPorcentaje(porcentaje);
+							usuarioIniciado.getWorkouts().get(cont).setTiempoPrevisto(tiempoEstimado);
+							usuarioIniciado.getWorkouts().get(cont).setTiempototal(tiempoTotal);
+							usuarioIniciado.getWorkouts().get(cont).setFecha(new Date());
+							historico = usuarioIniciado.getWorkouts().get(cont);
+							historico.actualizarHistorico(usuarioIniciado, workoutElegido);
+							encontrado = true;
+						}
+						cont++;
+					}
+					if (porcentaje == 100 && workoutElegido.getNivel() == usuarioIniciado.getNivel()) {
+						usuarioIniciado.setNivel(usuarioIniciado.getNivel() + 1);
+						usuarioIniciado.actualizarCliente();
+					}
+					if (!encontrado) {
+						Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
+								workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date());
+						historico.anadirHistorico(usuarioIniciado, workoutElegido);
+						usuarioIniciado.getWorkouts().add(historico);
+
+					}
+
 				}
 			}
 		});
@@ -501,5 +526,21 @@ public class Controlador {
 			panel.revalidate();
 		}
 		labels.clear();
+	}
+
+	public boolean tieneConexion() {
+		try {
+
+			URI uri = new URI("http://www.google.com");
+			URL url = uri.toURL();
+			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("HEAD");
+			connection.setConnectTimeout(3000);
+			connection.connect();
+			return (connection.getResponseCode() == 200);
+		} catch (Exception e) {
+
+			return false;
+		}
 	}
 }

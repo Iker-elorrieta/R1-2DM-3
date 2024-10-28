@@ -1,17 +1,31 @@
 package modelo;
 
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
 
-public class Workout {
+import conexion.Conexion;
 
+public class Workout implements Serializable {
+
+	private String campovideo = "video_workout";
+
+	private String campoNivel = "nivel_workout";
+	private String collectionName = "Workouts";
+	private static final long serialVersionUID = 1L;
 	private int nivel;
 	private String nombre;
 	private int numEjer;
 	private String video;
 	private ArrayList<Ejercicio> ejercicios;
 	private String id;
-
 
 	public Workout(int nivel, String nombre, int numEjer, String video, ArrayList<Ejercicio> ejercicios, String id) {
 		super();
@@ -75,5 +89,41 @@ public class Workout {
 		this.ejercicios = ejercicios;
 	}
 
-	
+	public ArrayList<Workout> mObtenerWorkouts() {
+		Firestore co = null;
+		ArrayList<Workout> listaWorkOuts = new ArrayList<Workout>();
+		try {
+			co = Conexion.conectar();
+
+			ApiFuture<QuerySnapshot> query = co.collection(collectionName).get();
+			QuerySnapshot querySnapshot = query.get();
+			List<QueryDocumentSnapshot> workouts = querySnapshot.getDocuments();
+
+			for (QueryDocumentSnapshot workout : workouts) {
+
+				double nivel = workout.getDouble(campoNivel);
+				Workout w = new Workout();
+
+				w.setNombre(workout.getId());
+				w.setNivel((int) nivel);
+				w.setVideo(workout.getString(campovideo));
+				w.setEjercicios(new Ejercicio().mObtenerEjercicios(collectionName, w.getNombre()));
+
+				listaWorkOuts.add(w);
+			}
+			co.close();
+
+		} catch (InterruptedException | ExecutionException e) {
+			System.out.println("Error: Clase Contacto, metodo mObtenerContactos");
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return listaWorkOuts;
+	}
 }

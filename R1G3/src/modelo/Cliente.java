@@ -1,6 +1,7 @@
 package modelo;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,8 +18,9 @@ import com.google.cloud.firestore.QuerySnapshot;
 
 import conexion.Conexion;
 
-public class Cliente {
+public class Cliente implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String campoNombre = "nom_usuario", campoApellido = "ap_usuario", campoEmail = "email_usuario",
 			campoFecha = "fechaNac_usuario", campoNivel = "nivel_usuario", campoEntrenador = "tipo_entrenador",
 			campoContrasena = "cont_usuario", collectionName = "Usuarios";
@@ -184,6 +186,12 @@ public class Cliente {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		try {
+			co.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return cliente;
 	}
 
@@ -209,7 +217,12 @@ public class Cliente {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-
+		try {
+			co.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	public void actualizarCliente() {
@@ -233,11 +246,17 @@ public class Cliente {
 			contactoCambios.put(campoContrasena, contrasena);
 			contactoCambios.put(campoNivel, nivel);
 			contactoCambios.put(campoEntrenador, esEntrenador);
-
+			
 			conRef.update(contactoCambios);
 			System.out.println("Modificado");
 
 		} catch (IOException | InterruptedException | ExecutionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			co.close();
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -268,6 +287,13 @@ public class Cliente {
 			System.out.println("Error: Clase Contacto, metodo mObtenerContactos");
 			e.printStackTrace();
 		} catch (IOException e) {
+			System.out.println("Error hola");
+			e.printStackTrace();
+		}
+		try {
+			co.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return listaUsuarios;

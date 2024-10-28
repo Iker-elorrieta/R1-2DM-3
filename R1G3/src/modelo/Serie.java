@@ -7,6 +7,7 @@ public class Serie {
 	private int numRepeticiones;
 	private String id;
 
+	
 	public Serie(int cuentaatras, String fotoSeries, String nomSeries, int numRepeticiones, String id) {
 		super();
 		this.cuentaatras = cuentaatras;
@@ -14,6 +15,10 @@ public class Serie {
 		this.nomSeries = nomSeries;
 		this.numRepeticiones = numRepeticiones;
 		this.id = id;
+	}
+
+	public Serie() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public String getId() {
@@ -55,4 +60,6 @@ public class Serie {
 	public void setNumRepeticiones(int numRepeticiones) {
 		this.numRepeticiones = numRepeticiones;
 	}
+
+
 }

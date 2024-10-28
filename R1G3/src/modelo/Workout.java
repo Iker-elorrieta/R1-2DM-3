@@ -2,6 +2,7 @@ package modelo;
 
 import java.util.ArrayList;
 
+
 public class Workout {
 
 	private int nivel;
@@ -11,6 +12,7 @@ public class Workout {
 	private ArrayList<Ejercicio> ejercicios;
 	private String id;
 
+
 	public Workout(int nivel, String nombre, int numEjer, String video, ArrayList<Ejercicio> ejercicios, String id) {
 		super();
 		this.nivel = nivel;
@@ -19,6 +21,10 @@ public class Workout {
 		this.video = video;
 		this.ejercicios = ejercicios;
 		this.id = id;
+	}
+
+	public Workout() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public String getId() {
@@ -68,4 +74,6 @@ public class Workout {
 	public void setEjercicios(ArrayList<Ejercicio> ejercicios) {
 		this.ejercicios = ejercicios;
 	}
+
+	
 }

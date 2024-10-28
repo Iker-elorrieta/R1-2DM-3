@@ -80,8 +80,9 @@ public class Controlador {
 				if (usuarioIniciado == null) {
 					JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
 				} else {
-					panelWorkouts = new vista.PanelWorkouts();
 
+					panelWorkouts = new vista.PanelWorkouts();
+					
 					panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
 					workouts = cargarWorkouts();
 					for (int i = -1; i != usuarioIniciado.getNivel(); i++) {

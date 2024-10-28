@@ -11,6 +11,7 @@ public class Ejercicio {
 	private String id;
 	private ArrayList<Serie> series;
 
+	
 	public Ejercicio(int cronometro, String descripcion, int descanso, String nombre, String id,
 			ArrayList<Serie> series) {
 		super();
@@ -20,6 +21,10 @@ public class Ejercicio {
 		this.nombre = nombre;
 		this.id = id;
 		this.series = series;
+	}
+
+	public Ejercicio() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public String getId() {

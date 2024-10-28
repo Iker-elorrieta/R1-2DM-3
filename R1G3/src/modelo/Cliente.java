@@ -104,8 +104,6 @@ public class Cliente {
 		this.esEntrenador = esEntrenador;
 	}
 
-	
-
 	@Override
 	public String toString() {
 		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
@@ -243,5 +241,35 @@ public class Cliente {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public ArrayList<Cliente> mObtenerTodosLosUsuarios() {
+		Firestore co = null;
+
+		ArrayList<Cliente> listaUsuarios = new ArrayList<Cliente>();
+
+		try {
+			co = Conexion.conectar();
+
+			ApiFuture<QuerySnapshot> query = co.collection(collectionName).get();
+
+			QuerySnapshot querySnapshot = query.get();
+			List<QueryDocumentSnapshot> usuariosFireBase = querySnapshot.getDocuments();
+			for (QueryDocumentSnapshot usuarioFireBase : usuariosFireBase) {
+				double nivel = usuarioFireBase.getDouble(campoNivel);
+				Cliente cliente = new Cliente(usuarioFireBase.getString(campoNombre),
+						usuarioFireBase.getString(campoApellido), usuarioFireBase.getId(),
+						usuarioFireBase.getString(campoContrasena), usuarioFireBase.getDate(campoFecha),
+						usuarioFireBase.getBoolean(campoEntrenador), (int) nivel);
+
+				listaUsuarios.add(cliente);
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			System.out.println("Error: Clase Contacto, metodo mObtenerContactos");
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return listaUsuarios;
 	}
 }

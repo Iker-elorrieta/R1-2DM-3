@@ -2,6 +2,7 @@ package vista;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
@@ -18,7 +19,7 @@ public class PanelLogin extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel panelLogin;
 	private JTextField txtFNombre;
-	private JTextField txtFContrasena;
+	private JPasswordField txtFContrasena;
 	private JButton btnIniciar;
 	private JButton btnRegistrarse;
 
@@ -48,7 +49,7 @@ public class PanelLogin extends JFrame {
 		panelLogin.add(txtFNombre);
 		txtFNombre.setColumns(10);
 
-		txtFContrasena = new JTextField();
+		txtFContrasena = new JPasswordField();
 		txtFContrasena.setFont(new Font("Nirmala UI", Font.PLAIN, 18));
 		txtFContrasena.setColumns(10);
 		txtFContrasena.setBounds(232, 244, 235, 29);
@@ -103,7 +104,7 @@ public class PanelLogin extends JFrame {
 		return txtFContrasena;
 	}
 
-	public void setTxtFContrasena(JTextField txtFContrasena) {
+	public void setTxtFContrasena(JPasswordField txtFContrasena) {
 		this.txtFContrasena = txtFContrasena;
 	}
 

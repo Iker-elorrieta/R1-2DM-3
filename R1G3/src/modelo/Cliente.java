@@ -155,30 +155,12 @@ public class Cliente implements Serializable {
 				if (usuario.getString(campoNombre).equals(nombre)
 						&& usuario.getString(campoContrasena).equals(contrasena)) {
 					double nivel = usuario.getDouble(campoNivel);
+					Historico nuevoHistorico = new Historico();
 					cliente = new Cliente(usuario.getString(campoNombre), usuario.getString(campoApellido),
 							usuario.getString(campoEmail), usuario.getString(campoContrasena),
 							usuario.getDate(campoFecha), usuario.getBoolean(campoEntrenador), (int) nivel,
-							usuario.getId(), new ArrayList<Historico>());
-					List<QueryDocumentSnapshot> historicos = usuario.getReference().collection("Historico").get().get()
-							.getDocuments();
-
-					for (QueryDocumentSnapshot historico : historicos) {
-						Historico nuevoHistorico = new Historico(historico.getDouble("%ejerCompletados"),
-								historico.getDate("fecha_workout"));
-
-						double tiempoPrev = historico.getDouble("tiempo_previsto");
-						double tiempoTot = historico.getDouble("tiempo_total");
-						DocumentReference dirRef = (DocumentReference) historico.getData().get("id_work");
-						if (dirRef != null) {
-							nuevoHistorico.setNombre(dirRef.get().get().getString("nom_workout"));
-							double nivelWork = dirRef.get().get().getDouble("nivel_workout");
-							nuevoHistorico.setNivel((int) nivelWork);
-						}
-
-						nuevoHistorico.setTiempoPrevisto((int) tiempoPrev);
-						nuevoHistorico.setTiempototal((int) tiempoTot);
-						cliente.getWorkouts().add(nuevoHistorico);
-					}
+							usuario.getId(), nuevoHistorico.obtenerHistorico(usuario));
+					
 				}
 			}
 
@@ -246,7 +228,7 @@ public class Cliente implements Serializable {
 			contactoCambios.put(campoContrasena, contrasena);
 			contactoCambios.put(campoNivel, nivel);
 			contactoCambios.put(campoEntrenador, esEntrenador);
-			
+
 			conRef.update(contactoCambios);
 			System.out.println("Modificado");
 

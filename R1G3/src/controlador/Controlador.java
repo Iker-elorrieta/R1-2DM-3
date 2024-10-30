@@ -77,12 +77,18 @@ public class Controlador {
 		// TODO Auto-generated method stub
 		this.panelLogin.getBtnIniciar().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				usuarioIniciado = usuarioIniciado.cargarCliente(panelLogin.getTxtFNombre().getText(),
-						panelLogin.getTxtFContrasena().getText());
+				if (tieneConexion()) {
+					usuarioIniciado = usuarioIniciado.cargarCliente(panelLogin.getTxtFNombre().getText(),
+							panelLogin.getTxtFContrasena().getText());
+					crearBackups();
+				} else {
+
+				}
+
 				if (usuarioIniciado == null) {
 					JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
 				} else {
-					GenerarBackups.main(null);
+
 					panelWorkouts = new vista.PanelWorkouts();
 
 					panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
@@ -109,6 +115,16 @@ public class Controlador {
 				inicalizarRegistro();
 			}
 		});
+	}
+
+	protected void crearBackups() {
+		// TODO Auto-generated method stub
+		ProcessBuilder pb = new ProcessBuilder("java", "-jar", "CrearBackups.jar");
+		try {
+			pb.start();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+		}
 	}
 
 	private void rellenarWorkouts() {
@@ -323,6 +339,7 @@ public class Controlador {
 					usuarioIniciado.setEmail(componentes[2].getText());
 					usuarioIniciado.setFechaNacimiento(fecha);
 					usuarioIniciado.setContrasena(componentes[4].getText());
+
 					usuarioIniciado.actualizarCliente();
 
 					panelPerfil.dispose();

@@ -23,7 +23,7 @@ public class Ejercicio implements Serializable {
 	private String nombre;
 	private String id;
 	private ArrayList<Serie> series;
-	private String campoDescrip = "desc_ejer", campocronometro = "cronometro", campodescanso = "descanso",
+	private final String campoDescrip = "desc_ejer", campocronometro = "cronometro", campodescanso = "descanso",
 			collectionName = "Ejercicios";
 
 	public Ejercicio(int cronometro, String descripcion, int descanso, String nombre, String id,

@@ -1,13 +1,17 @@
 package modelo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import com.google.cloud.firestore.CollectionReference;
 import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
 
 import conexion.Conexion;
 
@@ -18,6 +22,10 @@ public class Historico {
 	private int tiempoPrevisto;
 	private int tiempototal;
 	private Date fecha;
+	private final String coleccionClientes = "Usuarios", coleccionWorkouts = "Workouts",
+			coleccionHistorico = "Historico", campoID = "id_work", campoPorcentaje = "%ejerCompletados",
+			campoFecha = "fecha_workout", campoTiempoTot = "tiempo_total", campoTiempoPrev = "tiempo_previsto",
+			campoNombre = "nom_workout", campoNivel = "nivel_workout";
 
 	public Historico(double porcentaje, String nombre, int nivel, int tiempoPrevisto, int tiempototal, Date fecha) {
 
@@ -38,6 +46,10 @@ public class Historico {
 	public Historico(Double porcentaje, Date fecha) {
 		this.porcentaje = porcentaje;
 		this.fecha = fecha;
+		// TODO Auto-generated constructor stub
+	}
+
+	public Historico() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -94,16 +106,16 @@ public class Historico {
 
 		try {
 			co = Conexion.conectar();
-			DocumentReference workouts = co.collection("Workouts").document(workoutElegido.getId());
-			DocumentReference usuarios = co.collection("Usuarios").document(cliente.getId());
-			CollectionReference historico = usuarios.collection("Historico");
+			DocumentReference workouts = co.collection(coleccionWorkouts).document(workoutElegido.getId());
+			DocumentReference usuarios = co.collection(coleccionClientes).document(cliente.getId());
+			CollectionReference historico = usuarios.collection(coleccionHistorico);
 			Map<String, Object> usuarioNuevo = new HashMap<>();
 
-			usuarioNuevo.put("id_work", workouts);
-			usuarioNuevo.put("%ejerCompletados", porcentaje);
-			usuarioNuevo.put("fecha_workout", fecha);
-			usuarioNuevo.put("tiempo_total", tiempototal);
-			usuarioNuevo.put("tiempo_previsto", tiempoPrevisto);
+			usuarioNuevo.put(campoID, workouts);
+			usuarioNuevo.put(campoPorcentaje, porcentaje);
+			usuarioNuevo.put(campoFecha, fecha);
+			usuarioNuevo.put(campoTiempoTot, tiempototal);
+			usuarioNuevo.put(campoTiempoPrev, tiempoPrevisto);
 
 			historico.add(usuarioNuevo);
 
@@ -122,5 +134,32 @@ public class Historico {
 	public void actualizarHistorico(Cliente usuarioIniciado, Workout workoutElegido) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public ArrayList<Historico> obtenerHistorico(QueryDocumentSnapshot usuario)
+			throws InterruptedException, ExecutionException {
+		ArrayList<Historico> historial = new ArrayList<Historico>();
+
+		List<QueryDocumentSnapshot> historicos = usuario.getReference().collection(coleccionHistorico).get().get()
+				.getDocuments();
+
+		for (QueryDocumentSnapshot historico : historicos) {
+			Historico nuevoHistorico = new Historico(historico.getDouble(campoPorcentaje),
+					historico.getDate(campoFecha));
+
+			double tiempoPrev = historico.getDouble(campoTiempoPrev);
+			double tiempoTot = historico.getDouble(campoTiempoTot);
+			DocumentReference dirRef = (DocumentReference) historico.getData().get(campoID);
+			if (dirRef != null) {
+				nuevoHistorico.setNombre(dirRef.get().get().getString(campoNombre));
+				double nivelWork = dirRef.get().get().getDouble(campoNivel);
+				nuevoHistorico.setNivel((int) nivelWork);
+			}
+
+			nuevoHistorico.setTiempoPrevisto((int) tiempoPrev);
+			nuevoHistorico.setTiempototal((int) tiempoTot);
+			historial.add(nuevoHistorico);
+		}
+		return historial;
 	}
 }

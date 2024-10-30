@@ -15,10 +15,10 @@ import conexion.Conexion;
 
 public class Workout implements Serializable {
 
-	private String campovideo = "video_workout";
+	private final String campovideo = "video_workout";
 
-	private String campoNivel = "nivel_workout";
-	private String collectionName = "Workouts";
+	private final String campoNivel = "nivel_workout";
+	private final String collectionName = "Workouts";
 	private static final long serialVersionUID = 1L;
 	private int nivel;
 	private String nombre;

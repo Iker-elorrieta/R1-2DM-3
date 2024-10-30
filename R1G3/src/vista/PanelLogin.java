@@ -39,7 +39,7 @@ public class PanelLogin extends JFrame {
 		JLabel lblInicioSesion = new JLabel("Inicio de Sesion");
 		lblInicioSesion.setFont(new Font("Rockwell Condensed", Font.BOLD, 28));
 		lblInicioSesion.setHorizontalAlignment(SwingConstants.CENTER);
-		lblInicioSesion.setBounds(202, 65, 235, 40);
+		lblInicioSesion.setBounds(171, 65, 296, 40);
 		panelLogin.add(lblInicioSesion);
 
 		txtFNombre = new JTextField();
@@ -57,23 +57,23 @@ public class PanelLogin extends JFrame {
 		JLabel lblNombre = new JLabel("Nombre:");
 		lblNombre.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNombre.setFont(new Font("Rockwell Condensed", Font.PLAIN, 26));
-		lblNombre.setBounds(110, 170, 112, 22);
+		lblNombre.setBounds(80, 169, 142, 22);
 		panelLogin.add(lblNombre);
 
 		JLabel lblContrasena = new JLabel("Contraseña:");
 		lblContrasena.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblContrasena.setFont(new Font("Rockwell Condensed", Font.PLAIN, 26));
-		lblContrasena.setBounds(110, 247, 112, 22);
+		lblContrasena.setBounds(64, 247, 158, 22);
 		panelLogin.add(lblContrasena);
 
 		btnIniciar = new JButton("Iniciar Sesion");
 		btnIniciar.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		btnIniciar.setBounds(97, 356, 186, 29);
+		btnIniciar.setBounds(80, 356, 224, 29);
 		panelLogin.add(btnIniciar);
 
 		btnRegistrarse = new JButton("Registrarse");
 		btnRegistrarse.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		btnRegistrarse.setBounds(348, 356, 186, 29);
+		btnRegistrarse.setBounds(348, 356, 224, 29);
 		panelLogin.add(btnRegistrarse);
 
 		JLabel lblFoto = new JLabel("");

@@ -125,36 +125,36 @@ public class PanelRegistro extends JFrame {
 		lblNombre = new JLabel("Nombre:");
 		lblNombre.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblNombre.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		lblNombre.setBounds(87, 116, 207, 27);
+		lblNombre.setBounds(69, 116, 225, 27);
 		panelRegistro.add(lblNombre);
 
 		lblApellidos = new JLabel("Apellidos:");
 		lblApellidos.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblApellidos.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		lblApellidos.setBounds(87, 164, 207, 27);
+		lblApellidos.setBounds(69, 166, 225, 27);
 		panelRegistro.add(lblApellidos);
 
 		lblEmail = new JLabel("Email:");
 		lblEmail.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblEmail.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		lblEmail.setBounds(87, 216, 207, 27);
+		lblEmail.setBounds(69, 218, 225, 27);
 		panelRegistro.add(lblEmail);
 
 		lblFecha = new JLabel("Fecha de nacimiento:");
 		lblFecha.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblFecha.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		lblFecha.setBounds(87, 270, 207, 27);
+		lblFecha.setBounds(69, 272, 225, 27);
 		panelRegistro.add(lblFecha);
 
 		lblContrasena = new JLabel("Contraseña:");
 		lblContrasena.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblContrasena.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		lblContrasena.setBounds(87, 320, 207, 27);
+		lblContrasena.setBounds(87, 322, 207, 27);
 		panelRegistro.add(lblContrasena);
 
 		btnRegistrarse = new JButton("Registrarse");
 		btnRegistrarse.setFont(new Font("Rockwell Condensed", Font.PLAIN, 24));
-		btnRegistrarse.setBounds(202, 400, 235, 29);
+		btnRegistrarse.setBounds(165, 399, 291, 29);
 		panelRegistro.add(btnRegistrarse);
 
 	}

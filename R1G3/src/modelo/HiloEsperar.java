@@ -1,10 +1,10 @@
 package modelo;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import controlador.Controlador;
@@ -17,7 +17,7 @@ public class HiloEsperar extends Thread {
 	int contEjercicios, contSeries;
 	Workout workout;
 	Ejercicio ejercicioActivo;
-	ArrayList<JLabel> labels, fotos;
+	ArrayList<Component> labels, fotos;
 	JPanel panelEjercicio;
 	Controlador controlador = new Controlador();
 	ArrayList<Integer> tiemposEjercicio = new ArrayList<Integer>();
@@ -75,8 +75,8 @@ public class HiloEsperar extends Thread {
 	}
 
 	public HiloEsperar(HiloRegresivo serie, HiloRegresivo descanso, HiloCronometro hiloEjercicio, JButton botonEmpezar,
-			int contEjercicios, Workout workout, Ejercicio ejercicioActivo, int contSeries, ArrayList<JLabel> labels,
-			JPanel panelEjercicio, ArrayList<JLabel> fotos, ArrayList<Integer> tiemposEjercicio) {
+			int contEjercicios, Workout workout, Ejercicio ejercicioActivo, int contSeries, ArrayList<Component> labels,
+			JPanel panelEjercicio, ArrayList<Component> fotos, ArrayList<Integer> tiemposEjercicio) {
 
 		this.serie = serie;
 		this.descanso = descanso;

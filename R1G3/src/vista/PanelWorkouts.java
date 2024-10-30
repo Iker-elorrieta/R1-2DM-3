@@ -19,19 +19,14 @@ public class PanelWorkouts extends JFrame {
 	private JLabel lblPerfil, lblNivel;
 	private JPanel panelWorkout;
 	private JButton btnHistorial;
-	
-
-
 
 	private JComboBox<String> cmbxFiltrarNivel;
 	private JScrollPane scrollPane;
 
-
-
 	public PanelWorkouts() {
 
 		ImageIcon perfil = new ImageIcon("img/perfilUsuario.jpg");
-		
+
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 677, 510);
 		contentPane = new JPanel();
@@ -68,87 +63,59 @@ public class PanelWorkouts extends JFrame {
 
 		cmbxFiltrarNivel = new JComboBox<String>();
 		cmbxFiltrarNivel.setFont(new Font("Nirmala UI", Font.PLAIN, 15));
-		cmbxFiltrarNivel.setBounds(540, 121, 98, 22);
+		cmbxFiltrarNivel.setBounds(24, 122, 98, 22);
 		panelWorkout.add(cmbxFiltrarNivel);
 
 		btnHistorial = new JButton("Historial");
 		btnHistorial.setFont(new Font("Nirmala UI", Font.PLAIN, 15));
-		btnHistorial.setBounds(540, 171, 98, 29);
+		btnHistorial.setBounds(540, 119, 98, 29);
 		panelWorkout.add(btnHistorial);
-		
 
-		
 	}
-
-
-
-
 
 	public JLabel getLblPerfil() {
 		return lblPerfil;
 	}
 
-
-
 	public void setLblPerfil(JLabel lblPerfil) {
 		this.lblPerfil = lblPerfil;
 	}
-
-
 
 	public JLabel getLblNivel() {
 		return lblNivel;
 	}
 
-
-
 	public void setLblNivel(JLabel lblNivel) {
 		this.lblNivel = lblNivel;
 	}
-
-
 
 	public JPanel getPanelWorkout() {
 		return panelWorkout;
 	}
 
-
-
 	public void setPanelWorkout(JPanel panelWorkout) {
 		this.panelWorkout = panelWorkout;
 	}
-
-
 
 	public JButton getBtnHistorial() {
 		return btnHistorial;
 	}
 
-
-
 	public void setBtnHistorial(JButton btnHistorial) {
 		this.btnHistorial = btnHistorial;
 	}
-
-
 
 	public JComboBox<String> getCmbxFiltrarNivel() {
 		return cmbxFiltrarNivel;
 	}
 
-
-
 	public void setCmbxFiltrarNivel(JComboBox<String> cmbxFiltrarNivel) {
 		this.cmbxFiltrarNivel = cmbxFiltrarNivel;
 	}
 
-
-
 	public JScrollPane getScrollPane() {
 		return scrollPane;
 	}
-
-
 
 	public void setScrollPane(JScrollPane scrollPane) {
 		this.scrollPane = scrollPane;

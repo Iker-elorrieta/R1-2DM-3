@@ -1,6 +1,7 @@
 package controlador;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -19,7 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -43,6 +46,7 @@ import modelo.Historico;
 import modelo.Serie;
 import modelo.Workout;
 import vista.PanelEjercicio;
+import vista.PanelVistaEjercicio;
 
 public class Controlador {
 	private SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -52,6 +56,7 @@ public class Controlador {
 	private vista.PanelPerfil panelPerfil;
 	private vista.PanelWorkouts panelWorkouts;
 	private vista.PanelEjercicio panelEjercicio;
+	private vista.PanelVistaEjercicio panelVista;
 	private ArrayList<Workout> workouts;
 	private Workout workoutElegido;
 	private HiloCronometro hiloWorkout;
@@ -59,8 +64,8 @@ public class Controlador {
 	private HiloEsperar hiloEsperar;
 	private HiloRegresivo hiloSerie, hiloDescanso;
 	private int contEjercicios, cronometroParado, contSeries = 0;
-	private ArrayList<JLabel> labelsWorkout = new ArrayList<JLabel>(), labelsSeries = new ArrayList<JLabel>(),
-			labelsFotos = new ArrayList<JLabel>();
+	private ArrayList<Component> labelsWorkout = new ArrayList<Component>(), labelsSeries = new ArrayList<Component>(),
+			labelsFotos = new ArrayList<Component>();
 	private ArrayList<Integer> tiemposEjercicio = new ArrayList<Integer>();
 
 	public Controlador(vista.PanelLogin panelLogin) {
@@ -150,12 +155,12 @@ public class Controlador {
 					}
 
 				});
-				lblWorkout.setBounds(42, 141 + (40 * i), 349, 22);
+				lblWorkout.setBounds(42, 170 + (40 * i), 349, 22);
 				panelWorkouts.getPanelWorkout().add(lblWorkout);
 
 				JLabel lblYoutube = new JLabel("");
 				lblYoutube.setToolTipText(String.valueOf(i));
-				lblYoutube.setBounds(423, 133 + (40 * i), 46, 39);
+				lblYoutube.setBounds(423, 170 + (40 * i), 46, 39);
 				lblYoutube.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 
@@ -177,10 +182,40 @@ public class Controlador {
 				});
 				lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
 				panelWorkouts.getPanelWorkout().add(lblYoutube);
+
+				JButton btnVerEjercicios = new JButton("Ver Ejercicios");
+				btnVerEjercicios.setToolTipText(String.valueOf(i));
+				btnVerEjercicios.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						panelVista = new PanelVistaEjercicio();
+						DefaultListModel<String> modelo = new DefaultListModel<String>();
+						panelVista.setVisible(true);
+						panelVista.getListaEjercicios().setModel(modelo);
+						for (Ejercicio ejercicio : workouts.get(Integer.parseInt(btnVerEjercicios.getToolTipText()))
+								.getEjercicios()) {
+							modelo.addElement(ejercicio.getNombre());
+						}
+						inicializarVistaEjercicios();
+					}
+				});
+				btnVerEjercicios.setFont(new Font("Nirmala UI", Font.PLAIN, 15));
+				btnVerEjercicios.setBounds(508, 165 + (40 * i), 130, 39);
+				panelWorkouts.getPanelWorkout().add(btnVerEjercicios);
+
 				labelsWorkout.add(lblYoutube);
 				labelsWorkout.add(lblWorkout);
+				labelsWorkout.add(btnVerEjercicios);
 			}
 		}
+	}
+
+	protected void inicializarVistaEjercicios() {
+		// TODO Auto-generated method stub
+		panelVista.getBtnCerrar().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelVista.dispose();
+			}
+		});
 	}
 
 	private void rellenarWorkoutsFiltrado(int nivel) {
@@ -206,12 +241,12 @@ public class Controlador {
 					}
 
 				});
-				lblWorkout.setBounds(42, 141 + (40 * o), 349, 22);
+				lblWorkout.setBounds(42, 170 + (40 * o), 349, 22);
 				panelWorkouts.getPanelWorkout().add(lblWorkout);
 
 				JLabel lblYoutube = new JLabel("");
 				lblYoutube.setToolTipText(String.valueOf(i));
-				lblYoutube.setBounds(423, 133 + (40 * o), 46, 39);
+				lblYoutube.setBounds(423, 170 + (40 * o), 46, 39);
 				lblYoutube.addMouseListener(new MouseAdapter() {
 					public void mouseClicked(MouseEvent e) {
 
@@ -233,6 +268,27 @@ public class Controlador {
 				});
 				lblYoutube.setIcon(new ImageIcon("img/logoYT.jpg"));
 				panelWorkouts.getPanelWorkout().add(lblYoutube);
+
+				JButton btnVerEjercicios = new JButton("Ver Ejercicios");
+				btnVerEjercicios.setToolTipText(String.valueOf(i));
+				btnVerEjercicios.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						panelVista = new PanelVistaEjercicio();
+						DefaultListModel<String> modelo = new DefaultListModel<String>();
+						panelVista.setVisible(true);
+						panelVista.getListaEjercicios().setModel(modelo);
+						for (Ejercicio ejercicio : workouts.get(Integer.parseInt(btnVerEjercicios.getToolTipText()))
+								.getEjercicios()) {
+							modelo.addElement(ejercicio.getNombre());
+						}
+						inicializarVistaEjercicios();
+					}
+				});
+				btnVerEjercicios.setFont(new Font("Nirmala UI", Font.PLAIN, 15));
+				btnVerEjercicios.setBounds(508, 165 + (40 * o), 130, 39);
+				panelWorkouts.getPanelWorkout().add(btnVerEjercicios);
+
+				labelsWorkout.add(btnVerEjercicios);
 				labelsWorkout.add(lblYoutube);
 				labelsWorkout.add(lblWorkout);
 				o++;
@@ -432,7 +488,7 @@ public class Controlador {
 						hiloEjercicio = new HiloCronometro(panelEjercicio.getLblCronometroEjercicio());
 						hiloEjercicio.start();
 					}
-					hiloSerie = new HiloRegresivo(labelsSeries.get(contSeries),
+					hiloSerie = new HiloRegresivo((JLabel) labelsSeries.get(contSeries),
 							ejercicioActivo.getSeries().get(contSeries).getCuentaatras());
 					hiloDescanso = new HiloRegresivo(panelEjercicio.getLblDescanso(), ejercicioActivo.getDescanso());
 					hiloEsperar = new HiloEsperar(hiloSerie, hiloDescanso, hiloEjercicio,
@@ -536,8 +592,8 @@ public class Controlador {
 
 	}
 
-	public void eliminarLabels(ArrayList<JLabel> labels, JPanel panel) {
-		for (JLabel label : labels) {
+	public void eliminarLabels(ArrayList<Component> labels, JPanel panel) {
+		for (Component label : labels) {
 			panel.remove(label);
 			panel.repaint();
 			panel.revalidate();

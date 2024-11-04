@@ -24,7 +24,7 @@ public class Ejercicio implements Serializable {
 	private String id;
 	private ArrayList<Serie> series;
 	private final String campoDescrip = "desc_ejer", campocronometro = "cronometro", campodescanso = "descanso",
-			collectionName = "Ejercicios";
+			collectionName = "Ejercicios", campoNombre = "nom_ejer";
 
 	public Ejercicio(int cronometro, String descripcion, int descanso, String nombre, String id,
 			ArrayList<Serie> series) {
@@ -104,14 +104,16 @@ public class Ejercicio implements Serializable {
 				double descanso = ejercicio.getDouble(campodescanso);
 				double cronometro = ejercicio.getDouble(campocronometro);
 
-				Ejercicio e = new Ejercicio();
-				e.setNombre(ejercicio.getId());
-				e.setDescripcion(ejercicio.getString(campoDescrip));
-				e.setDescanso((int) descanso);
-				e.setCronometro((int) cronometro);
-				e.setSeries(new Serie().mObtenerSeries(coleccionRoot, collectionName, e.getNombre(), nombreWorkout));
+				Ejercicio ejercicioNuevo = new Ejercicio();
+				ejercicioNuevo.setNombre(ejercicio.getString(campoNombre));
+				ejercicioNuevo.setId(ejercicio.getId());
+				ejercicioNuevo.setDescripcion(ejercicio.getString(campoDescrip));
+				ejercicioNuevo.setDescanso((int) descanso);
+				ejercicioNuevo.setCronometro((int) cronometro);
+				ejercicioNuevo.setSeries(new Serie().mObtenerSeries(coleccionRoot, collectionName,
+						ejercicioNuevo.getId(), nombreWorkout));
 
-				listaEjercicios.add(e);
+				listaEjercicios.add(ejercicioNuevo);
 			}
 			co.close();
 		} catch (InterruptedException | ExecutionException | IOException e) {

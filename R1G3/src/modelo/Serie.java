@@ -21,7 +21,8 @@ public class Serie implements Serializable {
 	private String nomSeries;
 	private int numRepeticiones;
 	private String id;
-	private String campofoto = "foto_series", camporepeticiones = "num_repeticiones", collectionName = "Series";
+	private String campofoto = "foto_series", camporepeticiones = "num_repeticiones", collectionName = "Series",
+			campoNombre = "nom_series", campoCuentaReg = "cuenta_regresiva";
 
 	public Serie(int cuentaatras, String fotoSeries, String nomSeries, int numRepeticiones, String id) {
 		super();
@@ -92,11 +93,13 @@ public class Serie implements Serializable {
 			for (QueryDocumentSnapshot serieDoc : ejercicios) {
 
 				double repeticiones = serieDoc.getDouble(camporepeticiones);
-
+				double cuentareg = serieDoc.getDouble(campoCuentaReg);
 				Serie serie = new Serie();
-				serie.setNomSeries(serieDoc.getId());
+				serie.setId(serieDoc.getId());
+				serie.setNomSeries(serieDoc.getString(campoNombre));
 				serie.setNumRepeticiones((int) repeticiones);
 				serie.setFotoSeries(serieDoc.getString(campofoto));
+				serie.setCuentaatras((int) cuentareg);
 				listaSeries.add(serie);
 			}
 			co.close();

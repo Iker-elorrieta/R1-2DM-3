@@ -127,6 +127,23 @@ public class Cliente implements Serializable {
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
+			Boolean esEntrenador, int nivel, String id) {
+		super();
+		this.nombre = nombre;
+		this.apellidos = apellidos;
+		this.email = email;
+		this.contrasena = contrasena;
+		this.fechaNacimiento = fechaNacimiento;
+		this.esEntrenador = esEntrenador;
+		this.nivel = nivel;
+		this.id = id;
+	}
+
+	public Cliente() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
 			Boolean esEntrenador, int nivel) {
 		super();
 		this.nombre = nombre;
@@ -136,10 +153,7 @@ public class Cliente implements Serializable {
 		this.fechaNacimiento = fechaNacimiento;
 		this.esEntrenador = esEntrenador;
 		this.nivel = nivel;
-	}
 
-	public Cliente() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Cliente cargarCliente(String nombre, String contrasena) {
@@ -160,7 +174,7 @@ public class Cliente implements Serializable {
 							usuario.getString(campoEmail), usuario.getString(campoContrasena),
 							usuario.getDate(campoFecha), usuario.getBoolean(campoEntrenador), (int) nivel,
 							usuario.getId(), nuevoHistorico.obtenerHistorico(usuario));
-					
+
 				}
 			}
 
@@ -259,9 +273,9 @@ public class Cliente implements Serializable {
 			for (QueryDocumentSnapshot usuarioFireBase : usuariosFireBase) {
 				double nivel = usuarioFireBase.getDouble(campoNivel);
 				Cliente cliente = new Cliente(usuarioFireBase.getString(campoNombre),
-						usuarioFireBase.getString(campoApellido), usuarioFireBase.getId(),
+						usuarioFireBase.getString(campoApellido), usuarioFireBase.getString(campoEmail),
 						usuarioFireBase.getString(campoContrasena), usuarioFireBase.getDate(campoFecha),
-						usuarioFireBase.getBoolean(campoEntrenador), (int) nivel);
+						usuarioFireBase.getBoolean(campoEntrenador), (int) nivel, usuarioFireBase.getId());
 
 				listaUsuarios.add(cliente);
 			}

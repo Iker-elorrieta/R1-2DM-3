@@ -16,9 +16,6 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.concurrent.ExecutionException;
-
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -27,15 +24,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-
-import com.google.api.core.ApiFuture;
-import com.google.cloud.firestore.CollectionReference;
-import com.google.cloud.firestore.DocumentReference;
-import com.google.cloud.firestore.Firestore;
-import com.google.cloud.firestore.QueryDocumentSnapshot;
-import com.google.cloud.firestore.QuerySnapshot;
-
-import conexion.Conexion;
 import modelo.Cliente;
 import modelo.Ejercicio;
 import modelo.HiloCronometro;
@@ -296,55 +284,8 @@ public class Controlador {
 	}
 
 	private ArrayList<Workout> cargarWorkouts() {
-		Firestore co = null;
-		ArrayList<Workout> workouts = new ArrayList<Workout>();
 
-		try {
-			co = Conexion.conectar();
-			ApiFuture<QuerySnapshot> query = co.collection("Workouts").get();
-			QuerySnapshot querySnapshot = query.get();
-			List<QueryDocumentSnapshot> workoutsLista = querySnapshot.getDocuments();
-			for (QueryDocumentSnapshot workout : workoutsLista) {
-				ArrayList<Ejercicio> ejerciciosGuardados = new ArrayList<Ejercicio>();
-				DocumentReference workoutRef = workout.getReference();
-				CollectionReference ejercicios = workoutRef.collection("Ejercicios");
-				List<QueryDocumentSnapshot> ejerciciosLista = ejercicios.get().get().getDocuments();
-				for (QueryDocumentSnapshot ejercicio : ejerciciosLista) {
-					ArrayList<Serie> seriesGuardadas = new ArrayList<Serie>();
-					DocumentReference ejercicioRef = ejercicio.getReference();
-					CollectionReference series = ejercicioRef.collection("Series");
-					List<QueryDocumentSnapshot> seriesLista = series.get().get().getDocuments();
-					for (QueryDocumentSnapshot serie : seriesLista) {
-						double cuenta = serie.getDouble("cuenta_regresiva");
-						double repeticiones = serie.getDouble("num_repeticiones");
-						Serie nuevaSerie = new Serie((int) cuenta, serie.getString("foto_series"),
-								serie.getString("nom_series"), (int) repeticiones, serie.getId());
-						seriesGuardadas.add(nuevaSerie);
-					}
-					double cronometro = ejercicio.getDouble("cronometro");
-					double descanso = ejercicio.getDouble("descanso");
-					Ejercicio nuevoEjercicio = new Ejercicio((int) cronometro, ejercicio.getString("desc_ejer"),
-							(int) descanso, ejercicio.getString("nom_ejer"), ejercicio.getId(), seriesGuardadas);
-					ejerciciosGuardados.add(nuevoEjercicio);
-
-				}
-				double nivel = workout.getDouble("nivel_workout");
-				double numeroEjericios = workout.getDouble("numEjer_workout");
-				Workout nuevoWorkout = new Workout((int) nivel, workout.getString("nom_workout"), (int) numeroEjericios,
-						workout.getString("video_workout"), ejerciciosGuardados, workout.getId());
-				workouts.add(nuevoWorkout);
-			}
-			try {
-				co.close();
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (IOException | InterruptedException | ExecutionException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		return workouts;
+		return new Workout().mObtenerWorkouts();
 	}
 
 	private void inicalizarRegistro() {

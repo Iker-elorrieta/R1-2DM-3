@@ -19,6 +19,7 @@ public class Workout implements Serializable {
 
 	private final String campoNivel = "nivel_workout";
 	private final String collectionName = "Workouts";
+	private final String campoNumEjer = "numEjer_workout", campoNombre = "nom_workout";
 	private static final long serialVersionUID = 1L;
 	private int nivel;
 	private String nombre;
@@ -102,14 +103,16 @@ public class Workout implements Serializable {
 			for (QueryDocumentSnapshot workout : workouts) {
 
 				double nivel = workout.getDouble(campoNivel);
-				Workout w = new Workout();
+				double numEjer = workout.getDouble(campoNumEjer);
+				Workout workoutNuevo = new Workout();
+				workoutNuevo.setNombre(workout.getString(campoNombre));
+				workoutNuevo.setId(workout.getId());
+				workoutNuevo.setNivel((int) nivel);
+				workoutNuevo.setVideo(workout.getString(campovideo));
+				workoutNuevo.setNumEjer((int) numEjer);
+				workoutNuevo.setEjercicios(new Ejercicio().mObtenerEjercicios(collectionName, workoutNuevo.getId()));
 
-				w.setNombre(workout.getId());
-				w.setNivel((int) nivel);
-				w.setVideo(workout.getString(campovideo));
-				w.setEjercicios(new Ejercicio().mObtenerEjercicios(collectionName, w.getNombre()));
-
-				listaWorkOuts.add(w);
+				listaWorkOuts.add(workoutNuevo);
 			}
 			co.close();
 

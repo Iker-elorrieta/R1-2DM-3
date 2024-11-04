@@ -13,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -347,20 +346,18 @@ public class Controlador {
 			public void actionPerformed(ActionEvent e) {
 
 				JTextField[] componentes = new JTextField[] { panelRegistro.getTxtFNombre(),
-						panelRegistro.getTxtFApellidos(), panelRegistro.getTxtFEmail(), panelRegistro.getTxtFFecha(),
+						panelRegistro.getTxtFApellidos(), panelRegistro.getTxtFEmail(),
 						panelRegistro.getTxtFContrasena() };
+
 				String mensaje = comprobarError(componentes);
+				if (panelRegistro.getDateChooser().getDate() == null) {
+					mensaje = "Seleccione una fecha";
+				}
 				if (mensaje.isEmpty()) {
 
-					Date fecha = null;
-					try {
-						fecha = formato.parse(componentes[3].getText());
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 					Cliente nuevoCliente = new Cliente(componentes[0].getText(), componentes[1].getText(),
-							componentes[2].getText(), componentes[4].getText(), fecha, false, 0);
+							componentes[2].getText(), componentes[3].getText(),
+							panelRegistro.getDateChooser().getDate(), false, 0);
 					nuevoCliente.anadirCliente();
 
 					panelRegistro.dispose();
@@ -377,24 +374,18 @@ public class Controlador {
 		panelPerfil.getBtnGuardarDatos().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				JTextField[] componentes = new JTextField[] { panelPerfil.getTxtFNombre(),
-						panelPerfil.getTxtFApellidos(), panelPerfil.getTxtFEmail(), panelPerfil.getTxtFFecha(),
-						panelPerfil.getTxtFContrasena() };
+						panelPerfil.getTxtFApellidos(), panelPerfil.getTxtFEmail(), panelPerfil.getTxtFContrasena() };
 
 				String mensaje = comprobarError(componentes);
+				if (panelPerfil.getDateChooser().getDate() == null) {
+					mensaje = "Seleccione una fecha";
+				}
 				if (mensaje.isEmpty()) {
-
-					Date fecha = null;
-					try {
-						fecha = formato.parse(componentes[3].getText());
-					} catch (ParseException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
 					usuarioIniciado.setNombre(componentes[0].getText());
 					usuarioIniciado.setApellidos(componentes[1].getText());
 					usuarioIniciado.setEmail(componentes[2].getText());
-					usuarioIniciado.setFechaNacimiento(fecha);
-					usuarioIniciado.setContrasena(componentes[4].getText());
+					usuarioIniciado.setFechaNacimiento(panelPerfil.getDateChooser().getDate());
+					usuarioIniciado.setContrasena(componentes[3].getText());
 
 					usuarioIniciado.actualizarCliente();
 
@@ -418,7 +409,8 @@ public class Controlador {
 				panelPerfil.getTxtFApellidos().setText(usuarioIniciado.getApellidos());
 				panelPerfil.getTxtFContrasena().setText(usuarioIniciado.getContrasena());
 				panelPerfil.getTxtFEmail().setText(usuarioIniciado.getEmail());
-				panelPerfil.getTxtFFecha().setText(formato.format(usuarioIniciado.getFechaNacimiento()));
+				panelPerfil.getDateChooser().setDate(usuarioIniciado.getFechaNacimiento());
+
 				inicializarPerfil();
 			}
 		});
@@ -434,7 +426,6 @@ public class Controlador {
 
 	private String comprobarError(JTextField[] componentes) {
 		// TODO Auto-generated method stub
-		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 		formato.setLenient(false);
 		for (JTextField componente : componentes) {
 			if (componente.getText().isEmpty()) {
@@ -443,12 +434,6 @@ public class Controlador {
 		}
 		if (!componentes[2].getText().contains("@")) {
 			return "El email debe tener un formato correcto";
-		}
-		try {
-			formato.parse(componentes[3].getText());
-
-		} catch (ParseException e) {
-			return "La fecha debe estar en formato dd/MM/yyyy";
 		}
 
 		return "";

@@ -1,9 +1,8 @@
 package vista;
 
-
-
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Date;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -13,6 +12,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.toedter.calendar.JDateChooser;
+
 public class PanelPerfil extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -20,7 +21,6 @@ public class PanelPerfil extends JFrame {
 	private JTextField txtFNombre;
 	private JTextField txtFApellidos;
 	private JTextField txtFEmail;
-	private JTextField txtFFecha;
 	private JTextField txtFContrasena;
 	private JLabel lblNombre;
 	private JLabel lblApellidos;
@@ -28,12 +28,13 @@ public class PanelPerfil extends JFrame {
 	private JLabel lblFecha;
 	private JLabel lblContrasena;
 	private JButton btnGuardarDatos;
+	private JDateChooser dateChooser;
 
 	/**
 	 * Create the frame.
 	 */
 	public PanelPerfil() {
-		
+
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 677, 510);
 		panelPerfil = new JPanel();
@@ -67,11 +68,10 @@ public class PanelPerfil extends JFrame {
 		txtFEmail.setBounds(304, 216, 207, 27);
 		panelPerfil.add(txtFEmail);
 
-		txtFFecha = new JTextField();
-		txtFFecha.setFont(new Font("Nirmala UI", Font.PLAIN, 24));
-		txtFFecha.setColumns(10);
-		txtFFecha.setBounds(304, 270, 207, 27);
-		panelPerfil.add(txtFFecha);
+		dateChooser = new JDateChooser();
+		dateChooser.setMaxSelectableDate(new Date());
+		dateChooser.setBounds(304, 270, 207, 27);
+		panelPerfil.add(dateChooser);
 
 		txtFContrasena = new JTextField();
 		txtFContrasena.setFont(new Font("Nirmala UI", Font.PLAIN, 24));
@@ -139,12 +139,12 @@ public class PanelPerfil extends JFrame {
 		this.txtFEmail = txtFEmail;
 	}
 
-	public JTextField getTxtFFecha() {
-		return txtFFecha;
+	public JDateChooser getDateChooser() {
+		return dateChooser;
 	}
 
-	public void setTxtFFecha(JTextField txtFFecha) {
-		this.txtFFecha = txtFFecha;
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
 	}
 
 	public JTextField getTxtFContrasena() {

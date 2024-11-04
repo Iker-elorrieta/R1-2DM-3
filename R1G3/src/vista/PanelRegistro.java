@@ -11,10 +11,12 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.util.Date;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import com.toedter.calendar.JDateChooser;
 
 public class PanelRegistro extends JFrame {
 
@@ -23,7 +25,6 @@ public class PanelRegistro extends JFrame {
 	private JTextField txtFNombre;
 	private JTextField txtFApellidos;
 	private JTextField txtFEmail;
-	private JTextField txtFFecha;
 	private JTextField txtFContrasena;
 	private JLabel lblNombre;
 	private JLabel lblApellidos;
@@ -31,6 +32,7 @@ public class PanelRegistro extends JFrame {
 	private JLabel lblFecha;
 	private JLabel lblContrasena;
 	private JButton btnRegistrarse;
+	private JDateChooser dateChooser;
 
 	public PanelRegistro() {
 
@@ -43,37 +45,37 @@ public class PanelRegistro extends JFrame {
 			public void windowClosing(WindowEvent e) {
 				// TODO Auto-generated method stub
 				Principal.iniciarAplicacion();
-	             dispose();
+				dispose();
 			}
 
 			@Override
 			public void windowClosed(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowIconified(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowDeiconified(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowActivated(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
 			public void windowDeactivated(WindowEvent e) {
 				// TODO Auto-generated method stub
-				
+
 			}
 		});
 
@@ -110,12 +112,7 @@ public class PanelRegistro extends JFrame {
 		txtFEmail.setBounds(304, 216, 207, 27);
 		panelRegistro.add(txtFEmail);
 
-		txtFFecha = new JTextField();
-		txtFFecha.setFont(new Font("Nirmala UI", Font.PLAIN, 24));
-		txtFFecha.setColumns(10);
-		txtFFecha.setBounds(304, 270, 207, 27);
-		panelRegistro.add(txtFFecha);
-
+	
 		txtFContrasena = new JTextField();
 		txtFContrasena.setFont(new Font("Nirmala UI", Font.PLAIN, 24));
 		txtFContrasena.setColumns(10);
@@ -157,6 +154,11 @@ public class PanelRegistro extends JFrame {
 		btnRegistrarse.setBounds(165, 399, 291, 29);
 		panelRegistro.add(btnRegistrarse);
 
+		dateChooser = new JDateChooser();
+		dateChooser.setMaxSelectableDate(new Date());
+		dateChooser.setBounds(304, 270, 207, 27);
+		panelRegistro.add(dateChooser);
+
 	}
 
 	public JPanel getPanelRegistro() {
@@ -191,14 +193,6 @@ public class PanelRegistro extends JFrame {
 		this.txtFEmail = txtFEmail;
 	}
 
-	public JTextField getTxtFFecha() {
-		return txtFFecha;
-	}
-
-	public void setTxtFFecha(JTextField txtFFecha) {
-		this.txtFFecha = txtFFecha;
-	}
-
 	public JTextField getTxtFContrasena() {
 		return txtFContrasena;
 	}
@@ -215,4 +209,12 @@ public class PanelRegistro extends JFrame {
 		this.btnRegistrarse = btnRegistrarse;
 	}
 
+	public JDateChooser getDateChooser() {
+		return dateChooser;
+	}
+
+	public void setDateChooser(JDateChooser dateChooser) {
+		this.dateChooser = dateChooser;
+	}
+	
 }

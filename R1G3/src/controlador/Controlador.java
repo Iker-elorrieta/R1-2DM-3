@@ -334,6 +334,12 @@ public class Controlador {
 						workout.getString("video_workout"), ejerciciosGuardados, workout.getId());
 				workouts.add(nuevoWorkout);
 			}
+			try {
+				co.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} catch (IOException | InterruptedException | ExecutionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

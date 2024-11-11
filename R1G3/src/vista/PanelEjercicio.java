@@ -8,6 +8,7 @@ import java.awt.EventQueue;
 import javax.swing.JLabel;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 
@@ -71,7 +72,7 @@ public class PanelEjercicio extends JFrame {
 		lblCronometroEjercicio = new JLabel("Cronometro Ejercicio:");
 		lblCronometroEjercicio.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		lblCronometroEjercicio.setHorizontalAlignment(SwingConstants.LEFT);
-		lblCronometroEjercicio.setBounds(10, 126, 366, 26);
+		lblCronometroEjercicio.setBounds(10, 125, 366, 26);
 		panelEjercicios.add(lblCronometroEjercicio);
 
 		lblDescanso = new JLabel("Descanso:");
@@ -92,7 +93,10 @@ public class PanelEjercicio extends JFrame {
 		btnSalir.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		btnSalir.setBounds(422, 395, 151, 49);
 		panelEjercicios.add(btnSalir);
+		
 
+	
+	;
 	}
 
 	public JPanel getPanelEjercicios() {

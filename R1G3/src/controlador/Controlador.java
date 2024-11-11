@@ -520,8 +520,8 @@ public class Controlador {
 							labelsSeries.add(lblSerie);
 
 							JLabel lblFoto = new JLabel("");
-							lblFoto.setBounds(213, 125 + (74 * i), 46, 39);
-							lblFoto.setIcon(new ImageIcon(ejercicioActivo.getSeries().get(i).getFotoSeries()));
+							lblFoto.setBounds(213, 125 + (74 * i), 76, 39);
+							lblFoto.setIcon(new ImageIcon("img/"+ejercicioActivo.getSeries().get(i).getFotoSeries()));
 							panelEjercicio.getPanelEjercicios().add(lblFoto);
 							labelsFotos.add(lblFoto);
 							panelEjercicio.getPanelEjercicios().repaint();

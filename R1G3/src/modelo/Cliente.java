@@ -110,7 +110,7 @@ public class Cliente implements Serializable {
 	public String toString() {
 		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
 				+ ", contrasena=" + contrasena + ", fechaNacimiento=" + fechaNacimiento + ", esEntrenador="
-				+ esEntrenador + ", nivel=" + nivel + ", historico=" + historico.get(0).toString() + "]";
+				+ esEntrenador + ", nivel=" + nivel + ", Historial: "+historico.get(0).toString() +historico.get(1).toString()+"]";
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
@@ -156,7 +156,7 @@ public class Cliente implements Serializable {
 
 	}
 
-	public Cliente cargarCliente(String nombre, String contrasena) {
+	public Cliente cargarCliente(String email, String contrasena) {
 		Cliente cliente = null;
 		Firestore co = null;
 
@@ -166,7 +166,7 @@ public class Cliente implements Serializable {
 			QuerySnapshot querySnapshot = query.get();
 			List<QueryDocumentSnapshot> usuarios = querySnapshot.getDocuments();
 			for (QueryDocumentSnapshot usuario : usuarios) {
-				if (usuario.getString(campoNombre).equals(nombre)
+				if (usuario.getString(campoEmail).equals(email)
 						&& usuario.getString(campoContrasena).equals(contrasena)) {
 					double nivel = usuario.getDouble(campoNivel);
 					Historico nuevoHistorico = new Historico();
@@ -191,25 +191,57 @@ public class Cliente implements Serializable {
 		return cliente;
 	}
 
-	public void anadirCliente() {
+	public Boolean anadirCliente() {
+		Firestore co = null;
+		if (!comprobarClienteRepetido()) {
+			try {
+				co = Conexion.conectar();
+
+				CollectionReference usuarios = co.collection(collectionName);
+				Map<String, Object> usuarioNuevo = new HashMap<>();
+
+				usuarioNuevo.put(campoNombre, nombre);
+				usuarioNuevo.put(campoApellido, apellidos);
+				usuarioNuevo.put(campoEmail, email);
+				usuarioNuevo.put(campoFecha, fechaNacimiento);
+				usuarioNuevo.put(campoContrasena, contrasena);
+				usuarioNuevo.put(campoNivel, nivel);
+				usuarioNuevo.put(campoEntrenador, esEntrenador);
+				usuarios.add(usuarioNuevo);
+
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				co.close();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return true;
+		} else {
+
+			return false;
+		}
+	}
+
+	private boolean comprobarClienteRepetido() {
 		Firestore co = null;
 
 		try {
 			co = Conexion.conectar();
+			ApiFuture<QuerySnapshot> query = co.collection("Usuarios").get();
+			QuerySnapshot querySnapshot = query.get();
+			List<QueryDocumentSnapshot> usuarios = querySnapshot.getDocuments();
+			for (QueryDocumentSnapshot usuario : usuarios) {
+				if (usuario.getString(campoEmail).equals(email)) {
 
-			CollectionReference usuarios = co.collection(collectionName);
-			Map<String, Object> usuarioNuevo = new HashMap<>();
+					return true;
+				}
+			}
 
-			usuarioNuevo.put(campoNombre, nombre);
-			usuarioNuevo.put(campoApellido, apellidos);
-			usuarioNuevo.put(campoEmail, email);
-			usuarioNuevo.put(campoFecha, fechaNacimiento);
-			usuarioNuevo.put(campoContrasena, contrasena);
-			usuarioNuevo.put(campoNivel, nivel);
-			usuarioNuevo.put(campoEntrenador, esEntrenador);
-			usuarios.add(usuarioNuevo);
-
-		} catch (IOException e1) {
+		} catch (IOException | InterruptedException | ExecutionException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
@@ -219,6 +251,7 @@ public class Cliente implements Serializable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		return false;
 	}
 
 	public void actualizarCliente() {
@@ -275,7 +308,8 @@ public class Cliente implements Serializable {
 				Cliente cliente = new Cliente(usuarioFireBase.getString(campoNombre),
 						usuarioFireBase.getString(campoApellido), usuarioFireBase.getString(campoEmail),
 						usuarioFireBase.getString(campoContrasena), usuarioFireBase.getDate(campoFecha),
-						usuarioFireBase.getBoolean(campoEntrenador), (int) nivel, usuarioFireBase.getId());
+						usuarioFireBase.getBoolean(campoEntrenador), (int) nivel, usuarioFireBase.getId(),
+						new Historico().obtenerHistorico(usuarioFireBase));
 
 				listaUsuarios.add(cliente);
 			}

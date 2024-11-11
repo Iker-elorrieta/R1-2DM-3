@@ -37,6 +37,14 @@ public class Workout implements Serializable {
 		this.ejercicios = ejercicios;
 		this.id = id;
 	}
+	
+
+	@Override
+	public String toString() {
+		return "Workout [nivel=" + nivel + ", nombre=" + nombre + ", numEjer=" + numEjer + ", video=" + video
+				+ ", ejercicios=" + ejercicios + ", id=" + id + "]";
+	}
+
 
 	public Workout() {
 		// TODO Auto-generated constructor stub

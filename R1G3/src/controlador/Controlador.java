@@ -8,14 +8,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.Random;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -24,6 +29,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 import modelo.Cliente;
 import modelo.Ejercicio;
 import modelo.HiloCronometro;
@@ -33,6 +39,7 @@ import modelo.Historico;
 import modelo.Serie;
 import modelo.Workout;
 import vista.PanelEjercicio;
+import vista.PanelHistorial;
 import vista.PanelVistaEjercicio;
 
 public class Controlador {
@@ -44,7 +51,8 @@ public class Controlador {
 	private vista.PanelWorkouts panelWorkouts;
 	private vista.PanelEjercicio panelEjercicio;
 	private vista.PanelVistaEjercicio panelVista;
-	private ArrayList<Workout> workouts;
+	private vista.PanelHistorial panelHistorial;
+	private ArrayList<Workout> workouts = new ArrayList<Workout>();
 	private Workout workoutElegido;
 	private HiloCronometro hiloWorkout;
 	private HiloCronometro hiloEjercicio;
@@ -54,10 +62,25 @@ public class Controlador {
 	private ArrayList<Component> labelsWorkout = new ArrayList<Component>(), labelsSeries = new ArrayList<Component>(),
 			labelsFotos = new ArrayList<Component>();
 	private ArrayList<Integer> tiemposEjercicio = new ArrayList<Integer>();
+	private String[] mensajes = { "¡No te rindas! Cada esfuerzo cuenta.", "¡Eres más fuerte de lo que crees!",
+			"Hoy es un buen día para superarte.", "¡No importa lo lento que vayas, siempre y cuando no te detengas!",
+			"Recuerda por qué empezaste. ¡Sigue adelante!", "Cada repetición te acerca a tu meta.",
+			"El dolor es temporal, el orgullo es para siempre.", "Tu único límite es tu mente.",
+			"No estás compitiendo con nadie, excepto contigo mismo.", "¡La constancia es la clave del éxito!",
+			"Si puedes soñarlo, puedes lograrlo.", "Esfuerzo hoy, resultados mañana.",
+			"¡El éxito es la suma de pequeños esfuerzos repetidos!", "La única mala sesión es la que no haces.",
+			"Confía en el proceso, los resultados llegarán.", "¡Transforma la duda en determinación!",
+			"¡Eres más fuerte con cada entrenamiento!", "El cambio no es fácil, pero vale la pena.",
+			"¡Paso a paso hacia tus metas!", "Tú tienes el poder de cambiar tu vida." };
+
+	private int workoutIniciado = 0;
 
 	public Controlador(vista.PanelLogin panelLogin) {
 		this.panelLogin = panelLogin;
 		this.panelLogin.setVisible(true);
+		if (!tieneConexion()) {
+			this.panelLogin.getBtnRegistrarse().setVisible(false);
+		}
 		this.inicializarControlador();
 	}
 
@@ -73,18 +96,33 @@ public class Controlador {
 					usuarioIniciado = usuarioIniciado.cargarCliente(panelLogin.getTxtFNombre().getText(),
 							panelLogin.getTxtFContrasena().getText());
 					crearBackups();
+
 				} else {
+
+					usuarioIniciado = GenerarBackups.leerUsuariosDesdeArchivo(panelLogin.getTxtFNombre().getText(),
+							panelLogin.getTxtFContrasena().getText());
 
 				}
 
-				if (usuarioIniciado == null) {
+				if (usuarioIniciado == null || usuarioIniciado == new Cliente()) {
 					JOptionPane.showMessageDialog(null, "El usuario o contraseña no coinciden");
+					usuarioIniciado = new Cliente();
 				} else {
 
 					panelWorkouts = new vista.PanelWorkouts();
-
+					if (tieneConexion()) {
+						workouts = cargarWorkouts();
+					} else {
+						ArrayList<Historico> historial = new Historico().obtenerHistoricoBackups(usuarioIniciado);
+						for (Historico historico : historial) {
+							historico.toString();
+						}
+						usuarioIniciado.setWorkouts(new Historico().obtenerHistoricoBackups(usuarioIniciado));
+						workouts = GenerarBackups.leerWorkoutsDesdeArchivo();
+						panelWorkouts.getLblPerfil().setVisible(false);
+					}
 					panelWorkouts.getLblNivel().setText("Nivel: " + usuarioIniciado.getNivel());
-					workouts = cargarWorkouts();
+
 					for (int i = -1; i != usuarioIniciado.getNivel(); i++) {
 						panelWorkouts.getCmbxFiltrarNivel().addItem(String.valueOf(i + 1));
 						panelWorkouts.revalidate();
@@ -112,8 +150,10 @@ public class Controlador {
 	protected void crearBackups() {
 		// TODO Auto-generated method stub
 		ProcessBuilder pb = new ProcessBuilder("java", "-jar", "CrearBackups.jar");
+		ProcessBuilder pb2 = new ProcessBuilder("java", "-jar", "CrearHistorico.jar");
 		try {
 			pb.start();
+			pb2.start();
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 		}
@@ -305,10 +345,14 @@ public class Controlador {
 					Cliente nuevoCliente = new Cliente(componentes[0].getText(), componentes[1].getText(),
 							componentes[2].getText(), componentes[3].getText(),
 							panelRegistro.getDateChooser().getDate(), false, 0);
-					nuevoCliente.anadirCliente();
-
-					panelRegistro.dispose();
-					panelLogin.setVisible(true);
+					Boolean registrado = nuevoCliente.anadirCliente();
+					if (registrado) {
+						JOptionPane.showMessageDialog(null, "Usuario Registrado correctamente");
+						panelRegistro.dispose();
+						panelLogin.setVisible(true);
+					} else {
+						JOptionPane.showMessageDialog(null, "Este email ya esta vinculado a otra cuenta");
+					}
 				} else {
 					JOptionPane.showMessageDialog(null, mensaje);
 				}
@@ -369,6 +413,75 @@ public class Controlador {
 						Integer.parseInt((String) panelWorkouts.getCmbxFiltrarNivel().getSelectedItem()));
 			}
 		});
+		panelWorkouts.getLblPerfil().addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+
+				panelPerfil = new vista.PanelPerfil();
+				panelPerfil.setVisible(true);
+				panelPerfil.getTxtFNombre().setText(usuarioIniciado.getNombre());
+				panelPerfil.getTxtFApellidos().setText(usuarioIniciado.getApellidos());
+				panelPerfil.getTxtFContrasena().setText(usuarioIniciado.getContrasena());
+				panelPerfil.getTxtFEmail().setText(usuarioIniciado.getEmail());
+				panelPerfil.getDateChooser().setDate(usuarioIniciado.getFechaNacimiento());
+
+				inicializarPerfil();
+			}
+		});
+		panelWorkouts.getBtnHistorial().addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelWorkouts.setVisible(false);
+				panelHistorial = new PanelHistorial();
+				panelHistorial.setVisible(true);
+				try {
+					rellenarTabla();
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				inicializarHistorial();
+			}
+		});
+
+	}
+
+	protected void inicializarHistorial() {
+		// TODO Auto-generated method stub
+		panelHistorial.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosed(WindowEvent e) {
+				// TODO Auto-generated method stub
+				panelWorkouts.setVisible(true);
+
+			}
+
+		});
+	}
+
+	protected void rellenarTabla() throws ParseException {
+		// TODO Auto-generated method stub
+		String[] columnas = { "Nombre Workout", "Nivel Workout", "% Ejecicios Completados", "Fecha", "Tiempo Estimado",
+				"Tiempo Total" };
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		DefaultTableModel modelo = new DefaultTableModel(columnas, 0);
+		ArrayList<Historico> historicoOrdenado = usuarioIniciado.getWorkouts();
+		ordenarArrayPorFecha(historicoOrdenado);
+		for (Historico historico : historicoOrdenado) {
+
+			Object[] fila = { historico.getNombre(), historico.getNivel(), historico.getPorcentaje(),
+					formato.format(historico.getFecha()), historico.getTiempoPrevisto(), historico.getTiempototal() };
+			modelo.addRow(fila);
+		}
+
+		panelHistorial.getTablaHistorico().setModel(modelo);
+	}
+
+	private void ordenarArrayPorFecha(ArrayList<Historico> historicoOrdenado) {
+		// TODO Auto-generated method stub
+		historicoOrdenado.sort(new Comparator<Historico>() {
+			public int compare(Historico o1, Historico o2) {
+				return o2.getFecha().compareTo(o1.getFecha());
+			}
+		});
 	}
 
 	private String comprobarError(JTextField[] componentes) {
@@ -394,6 +507,7 @@ public class Controlador {
 						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Ejercicio")
 						|| panelEjercicio.getBtnEmpezar().getText().equals("Siguiente Serie")) {
 					Ejercicio ejercicioActivo = workoutElegido.getEjercicios().get(contEjercicios);
+					workoutIniciado = 1;
 					if (labelsSeries.isEmpty()) {
 						for (int i = 0; i < ejercicioActivo.getSeries().size(); i++) {
 
@@ -466,58 +580,72 @@ public class Controlador {
 				panelEjercicio.dispose();
 				panelWorkouts.setVisible(true);
 				inicializarWorkouts();
-				if (hiloSerie.isAlive()) {
-					hiloSerie.terminar();
-				}
-				if (hiloDescanso.isAlive()) {
-					hiloDescanso.terminar();
-				}
-				if (hiloEjercicio.isAlive()) {
-					hiloEjercicio.terminar();
-				}
-				if (hiloWorkout.isAlive()) {
-					hiloWorkout.terminar();
-				}
-				if (contEjercicios > 0) {
-					int tiempoTotal = 0;
-					int tiempoEstimado = 0;
-					double porcentaje = (100 * contEjercicios) / workoutElegido.getEjercicios().size();
-					for (Integer tiempo : tiemposEjercicio) {
-						tiempoTotal += tiempo;
+				if (workoutIniciado == 1) {
+					if (hiloSerie.isAlive()) {
+						hiloSerie.terminar();
 					}
-					for (Ejercicio ejercicio : workoutElegido.getEjercicios()) {
-						for (Serie serie : ejercicio.getSeries()) {
-							tiempoEstimado += serie.getCuentaatras();
-							tiempoEstimado += ejercicio.getDescanso();
+					if (hiloDescanso.isAlive()) {
+						hiloDescanso.terminar();
+					}
+					if (hiloEjercicio.isAlive()) {
+						hiloEjercicio.terminar();
+					}
+					if (hiloWorkout.isAlive()) {
+						hiloWorkout.terminar();
+					}
+					if (contEjercicios > 0) {
+						int tiempoTotal = 0;
+						int tiempoEstimado = 0;
+						double porcentaje = (100 * contEjercicios) / workoutElegido.getEjercicios().size();
+						for (Integer tiempo : tiemposEjercicio) {
+							tiempoTotal += tiempo;
 						}
-					}
-					int cont = 0;
-					boolean encontrado = false;
-					for (Historico historico : usuarioIniciado.getWorkouts()) {
-						if (historico.getNombre().equals(workoutElegido.getNombre())) {
-
-							usuarioIniciado.getWorkouts().get(cont).setPorcentaje(porcentaje);
-							usuarioIniciado.getWorkouts().get(cont).setTiempoPrevisto(tiempoEstimado);
-							usuarioIniciado.getWorkouts().get(cont).setTiempototal(tiempoTotal);
-							usuarioIniciado.getWorkouts().get(cont).setFecha(new Date());
-							historico = usuarioIniciado.getWorkouts().get(cont);
-							historico.actualizarHistorico(usuarioIniciado, workoutElegido);
-							encontrado = true;
+						for (Ejercicio ejercicio : workoutElegido.getEjercicios()) {
+							for (Serie serie : ejercicio.getSeries()) {
+								tiempoEstimado += serie.getCuentaatras();
+								tiempoEstimado += ejercicio.getDescanso();
+							}
 						}
-						cont++;
-					}
-					if (porcentaje == 100 && workoutElegido.getNivel() == usuarioIniciado.getNivel()) {
-						usuarioIniciado.setNivel(usuarioIniciado.getNivel() + 1);
-						usuarioIniciado.actualizarCliente();
-					}
-					if (!encontrado) {
-						Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
-								workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date());
-						historico.anadirHistorico(usuarioIniciado, workoutElegido);
-						usuarioIniciado.getWorkouts().add(historico);
+						int cont = 0;
+						boolean encontrado = false;
+						JOptionPane.showInternalMessageDialog(null,
+								"Tiempo total: " + tiempoTotal + "\nPorcentaje completado: " + porcentaje + "\n"
+										+ mensajes[new Random().nextInt(mensajes.length)],
+								"Resumen", 1);
+						if (tieneConexion()) {
+							for (Historico historico : usuarioIniciado.getWorkouts()) {
+								if (historico.getNombre().equals(workoutElegido.getNombre())) {
+
+									usuarioIniciado.getWorkouts().get(cont).setPorcentaje(porcentaje);
+									usuarioIniciado.getWorkouts().get(cont).setTiempoPrevisto(tiempoEstimado);
+									usuarioIniciado.getWorkouts().get(cont).setTiempototal(tiempoTotal);
+									usuarioIniciado.getWorkouts().get(cont).setFecha(new Date());
+									historico = usuarioIniciado.getWorkouts().get(cont);
+									historico.actualizarHistorico(usuarioIniciado);
+									encontrado = true;
+								}
+								cont++;
+							}
+							if (porcentaje == 100 && workoutElegido.getNivel() == usuarioIniciado.getNivel()) {
+								usuarioIniciado.setNivel(usuarioIniciado.getNivel() + 1);
+								usuarioIniciado.actualizarCliente();
+							}
+							if (!encontrado) {
+								Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
+										workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date(), null);
+								historico.anadirHistorico(usuarioIniciado, workoutElegido);
+								usuarioIniciado.getWorkouts().add(historico);
+
+							}
+						}
 
 					}
-
+					cronometroParado = 0;
+					contEjercicios = 0;
+					contSeries = 0;
+					workoutIniciado = 0;
+					eliminarLabels(labelsSeries, panelEjercicio.getPanelEjercicios());
+					eliminarLabels(labelsFotos, panelEjercicio.getPanelEjercicios());
 				}
 			}
 		});

@@ -33,6 +33,12 @@ public class Serie implements Serializable {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Serie [cuentaatras=" + cuentaatras + ", fotoSeries=" + fotoSeries + ", nomSeries=" + nomSeries
+				+ ", numRepeticiones=" + numRepeticiones + ", id=" + id + "]";
+	}
+
 	public Serie() {
 		// TODO Auto-generated constructor stub
 	}

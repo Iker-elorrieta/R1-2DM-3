@@ -63,11 +63,12 @@ public class CrearHistorico {
 					historicoUsu.appendChild(pais);
 
 					Element compania = documento.createElement(campoNombre);
-					compania.appendChild(documento.createTextNode(historico.getNombre()));
+					compania.appendChild(documento.createTextNode(historico.getWorkoutReferido().getNombre()));
 					historicoUsu.appendChild(compania);
 
 					Element nivel = documento.createElement(campoNivel);
-					nivel.appendChild(documento.createTextNode(String.valueOf(historico.getNivel())));
+					nivel.appendChild(
+							documento.createTextNode(String.valueOf(historico.getWorkoutReferido().getNivel())));
 					historicoUsu.appendChild(nivel);
 
 					Element precio = documento.createElement(campoTiempoTot);

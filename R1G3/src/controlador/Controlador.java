@@ -467,8 +467,9 @@ public class Controlador {
 		ordenarArrayPorFecha(historicoOrdenado);
 		for (Historico historico : historicoOrdenado) {
 
-			Object[] fila = { historico.getNombre(), historico.getNivel(), historico.getPorcentaje(),
-					formato.format(historico.getFecha()), historico.getTiempoPrevisto(), historico.getTiempototal() };
+			Object[] fila = { historico.getWorkoutReferido().getNombre(), historico.getWorkoutReferido().getNivel(),
+					historico.getPorcentaje(), formato.format(historico.getFecha()), historico.getTiempoPrevisto(),
+					historico.getTiempototal() };
 			modelo.addRow(fila);
 		}
 
@@ -521,7 +522,7 @@ public class Controlador {
 
 							JLabel lblFoto = new JLabel("");
 							lblFoto.setBounds(213, 125 + (74 * i), 76, 39);
-							lblFoto.setIcon(new ImageIcon("img/"+ejercicioActivo.getSeries().get(i).getFotoSeries()));
+							lblFoto.setIcon(new ImageIcon("img/" + ejercicioActivo.getSeries().get(i).getFotoSeries()));
 							panelEjercicio.getPanelEjercicios().add(lblFoto);
 							labelsFotos.add(lblFoto);
 							panelEjercicio.getPanelEjercicios().repaint();
@@ -614,7 +615,7 @@ public class Controlador {
 								"Resumen", 1);
 						if (tieneConexion()) {
 							for (Historico historico : usuarioIniciado.getWorkouts()) {
-								if (historico.getNombre().equals(workoutElegido.getNombre())) {
+								if (historico.getWorkoutReferido().getNombre().equals(workoutElegido.getNombre())) {
 
 									usuarioIniciado.getWorkouts().get(cont).setPorcentaje(porcentaje);
 									usuarioIniciado.getWorkouts().get(cont).setTiempoPrevisto(tiempoEstimado);
@@ -631,8 +632,8 @@ public class Controlador {
 								usuarioIniciado.actualizarCliente();
 							}
 							if (!encontrado) {
-								Historico historico = new Historico(porcentaje, workoutElegido.getNombre(),
-										workoutElegido.getNivel(), tiempoEstimado, tiempoTotal, new Date(), null);
+								Historico historico = new Historico(porcentaje, workoutElegido, tiempoEstimado,
+										tiempoTotal, new Date(), null);
 								historico.anadirHistorico(usuarioIniciado, workoutElegido);
 								usuarioIniciado.getWorkouts().add(historico);
 

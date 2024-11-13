@@ -37,7 +37,6 @@ public class Workout implements Serializable {
 		this.ejercicios = ejercicios;
 		this.id = id;
 	}
-	
 
 	@Override
 	public String toString() {
@@ -45,9 +44,14 @@ public class Workout implements Serializable {
 				+ ", ejercicios=" + ejercicios + ", id=" + id + "]";
 	}
 
-
 	public Workout() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Workout(String nombre, int nivel) {
+		// TODO Auto-generated constructor stub
+		this.nombre = nombre;
+		this.nivel = nivel;
 	}
 
 	public String getId() {

@@ -37,8 +37,7 @@ public class Historico implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 	private double porcentaje;
-	private String nombre;
-	private int nivel;
+	private Workout workoutReferido;
 	private int tiempoPrevisto;
 	private int tiempoTotal;
 	private Date fecha;
@@ -49,22 +48,15 @@ public class Historico implements Serializable {
 			campoNombre = "nom_workout", campoNivel = "nivel_workout";
 	private final String HistoricoFileRoute = "backups/historico.xml";
 
-	public Historico(double porcentaje, String nombre, int nivel, int tiempoPrevisto, int tiempoTotal, Date fecha,
+	public Historico(double porcentaje, Workout workoutReferido, int tiempoPrevisto, int tiempoTotal, Date fecha,
 			String id) {
 
 		this.porcentaje = porcentaje;
-		this.nombre = nombre;
-		this.nivel = nivel;
+		this.workoutReferido = workoutReferido;
 		this.tiempoPrevisto = tiempoPrevisto;
 		this.tiempoTotal = tiempoTotal;
 		this.fecha = fecha;
 		this.id = id;
-	}
-
-	@Override
-	public String toString() {
-		return "Historico [porcentaje=" + porcentaje + ", nombre=" + nombre + ", nivel=" + nivel + ", tiempoPrevisto="
-				+ tiempoPrevisto + ", tiempototal=" + tiempoTotal + ", fecha=" + fecha + "]";
 	}
 
 	public Historico(Double porcentaje, Date fecha) {
@@ -93,20 +85,20 @@ public class Historico implements Serializable {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public Workout getWorkoutReferido() {
+		return workoutReferido;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setWorkoutReferido(Workout workoutReferido) {
+		this.workoutReferido = workoutReferido;
 	}
 
-	public int getNivel() {
-		return nivel;
+	public int getTiempoTotal() {
+		return tiempoTotal;
 	}
 
-	public void setNivel(int nivel) {
-		this.nivel = nivel;
+	public void setTiempoTotal(int tiempoTotal) {
+		this.tiempoTotal = tiempoTotal;
 	}
 
 	public int getTiempoPrevisto() {
@@ -210,9 +202,10 @@ public class Historico implements Serializable {
 			double tiempoTot = historico.getDouble(campoTiempoTot);
 			DocumentReference dirRef = (DocumentReference) historico.getData().get(campoID);
 			if (dirRef != null) {
-				nuevoHistorico.setNombre(dirRef.get().get().getString(campoNombre));
+
 				double nivelWork = dirRef.get().get().getDouble(campoNivel);
-				nuevoHistorico.setNivel((int) nivelWork);
+				Workout nuevoWorkout = new Workout(dirRef.get().get().getString(campoNombre), (int) nivelWork);
+				nuevoHistorico.setWorkoutReferido(nuevoWorkout);
 			}
 
 			nuevoHistorico.setTiempoPrevisto((int) tiempoPrev);
@@ -237,12 +230,12 @@ public class Historico implements Serializable {
 				if (usuarios.item(i).getAttributes().item(0).getTextContent().equals(cliente.getId())) {
 					NodeList historicos = usuarios.item(i).getChildNodes();
 					for (int o = 0; o < historicos.getLength(); o++) {
-						SimpleDateFormat formato = new SimpleDateFormat( "EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
+						SimpleDateFormat formato = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
 						NodeList atributos = historicos.item(o).getChildNodes();
+						Workout nuevoWorkout = new Workout(atributos.item(2).getTextContent(),
+								Integer.parseInt(atributos.item(3).getTextContent()));
 						historico.add(new Historico(Double.parseDouble(atributos.item(0).getTextContent()),
-								atributos.item(2).getTextContent(),
-								Integer.parseInt(atributos.item(3).getTextContent()),
-								Integer.parseInt(atributos.item(4).getTextContent()),
+								nuevoWorkout, Integer.parseInt(atributos.item(4).getTextContent()),
 								Integer.parseInt(atributos.item(5).getTextContent()),
 								formato.parse(atributos.item(1).getTextContent()),
 								historicos.item(o).getAttributes().item(0).getTextContent()));

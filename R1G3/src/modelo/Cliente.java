@@ -110,7 +110,8 @@ public class Cliente implements Serializable {
 	public String toString() {
 		return "Cliente [id=" + id + ", nombre=" + nombre + ", apellidos=" + apellidos + ", email=" + email
 				+ ", contrasena=" + contrasena + ", fechaNacimiento=" + fechaNacimiento + ", esEntrenador="
-				+ esEntrenador + ", nivel=" + nivel + ", Historial: "+historico.get(0).toString() +historico.get(1).toString()+"]";
+				+ esEntrenador + ", nivel=" + nivel + ", Historial: " + historico.get(0).toString()
+				+ historico.get(1).toString() + "]";
 	}
 
 	public Cliente(String nombre, String apellidos, String email, String contrasena, Date fechaNacimiento,
@@ -327,5 +328,39 @@ public class Cliente implements Serializable {
 			e.printStackTrace();
 		}
 		return listaUsuarios;
+	}
+
+	public String comprobarCorreoRepetido(String text) {
+		// TODO Auto-generated method stub
+		Firestore co = null;
+
+		String mensaje = "";
+
+		try {
+			co = Conexion.conectar();
+
+			ApiFuture<QuerySnapshot> query = co.collection(collectionName).get();
+
+			QuerySnapshot querySnapshot = query.get();
+			List<QueryDocumentSnapshot> usuariosFireBase = querySnapshot.getDocuments();
+			for (QueryDocumentSnapshot usuarioFireBase : usuariosFireBase) {
+				if (usuarioFireBase.getString(campoEmail).equals(text)) {
+					mensaje = "Este correo ya existe";
+				}
+			}
+		} catch (InterruptedException | ExecutionException e) {
+			System.out.println("Error: Clase Contacto, metodo mObtenerContactos");
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println("Error hola");
+			e.printStackTrace();
+		}
+		try {
+			co.close();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return mensaje;
 	}
 }

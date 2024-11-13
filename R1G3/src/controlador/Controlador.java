@@ -113,10 +113,7 @@ public class Controlador {
 					if (tieneConexion()) {
 						workouts = cargarWorkouts();
 					} else {
-						ArrayList<Historico> historial = new Historico().obtenerHistoricoBackups(usuarioIniciado);
-						for (Historico historico : historial) {
-							historico.toString();
-						}
+
 						usuarioIniciado.setWorkouts(new Historico().obtenerHistoricoBackups(usuarioIniciado));
 						workouts = GenerarBackups.leerWorkoutsDesdeArchivo();
 						panelWorkouts.getLblPerfil().setVisible(false);
@@ -163,7 +160,8 @@ public class Controlador {
 		// TODO Auto-generated method stub
 		for (int i = 0; i <= workouts.size() - 1; i++) {
 
-			if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()) {
+			if (usuarioIniciado.getNivel() >= workouts.get(i).getNivel()
+					&& workouts.get(i).getEjercicios().size() != 0) {
 				JLabel lblWorkout = new JLabel(i + " " + workouts.get(i).getNombre() + " Ejercicios: "
 						+ workouts.get(i).getNumEjer() + " Nivel: " + workouts.get(i).getNivel());
 				lblWorkout.setToolTipText(String.valueOf(i));
@@ -391,20 +389,6 @@ public class Controlador {
 
 	private void inicializarWorkouts() {
 		// TODO Auto-generated method stub
-		panelWorkouts.getLblPerfil().addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-
-				panelPerfil = new vista.PanelPerfil();
-				panelPerfil.setVisible(true);
-				panelPerfil.getTxtFNombre().setText(usuarioIniciado.getNombre());
-				panelPerfil.getTxtFApellidos().setText(usuarioIniciado.getApellidos());
-				panelPerfil.getTxtFContrasena().setText(usuarioIniciado.getContrasena());
-				panelPerfil.getTxtFEmail().setText(usuarioIniciado.getEmail());
-				panelPerfil.getDateChooser().setDate(usuarioIniciado.getFechaNacimiento());
-
-				inicializarPerfil();
-			}
-		});
 
 		panelWorkouts.getCmbxFiltrarNivel().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -497,7 +481,7 @@ public class Controlador {
 			return "El email debe tener un formato correcto";
 		}
 
-		return "";
+		return usuarioIniciado.comprobarCorreoRepetido(componentes[2].getText());
 	}
 
 	private void inicializarEjercicios() {

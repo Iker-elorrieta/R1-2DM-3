@@ -16,7 +16,7 @@ public class PanelHistorial extends JFrame {
 
 
 	public PanelHistorial() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 677, 510);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -38,5 +38,15 @@ public class PanelHistorial extends JFrame {
 		));
 		tablaHistorico.setFont(new Font("Nirmala UI", Font.PLAIN, 14));
 		scrollPane.setViewportView(tablaHistorico);
+	}
+
+
+	public JTable getTablaHistorico() {
+		return tablaHistorico;
+	}
+
+
+	public void setTablaHistorico(JTable tablaHistorico) {
+		this.tablaHistorico = tablaHistorico;
 	}
 }

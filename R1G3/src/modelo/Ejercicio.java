@@ -37,6 +37,12 @@ public class Ejercicio implements Serializable {
 		this.series = series;
 	}
 
+	@Override
+	public String toString() {
+		return "Ejercicio [cronometro=" + cronometro + ", descripcion=" + descripcion + ", descanso=" + descanso
+				+ ", nombre=" + nombre + ", id=" + id + ", series=" + series + "]";
+	}
+
 	public Ejercicio() {
 		// TODO Auto-generated constructor stub
 	}

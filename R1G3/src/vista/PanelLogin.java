@@ -18,7 +18,7 @@ public class PanelLogin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel panelLogin;
-	private JTextField txtFNombre;
+	private JTextField txtFEmail;
 	private JPasswordField txtFContrasena;
 	private JButton btnIniciar;
 	private JButton btnRegistrarse;
@@ -43,11 +43,11 @@ public class PanelLogin extends JFrame {
 		lblInicioSesion.setBounds(171, 65, 296, 40);
 		panelLogin.add(lblInicioSesion);
 
-		txtFNombre = new JTextField();
-		txtFNombre.setFont(new Font("Nirmala UI", Font.PLAIN, 18));
-		txtFNombre.setBounds(232, 167, 235, 29);
-		panelLogin.add(txtFNombre);
-		txtFNombre.setColumns(10);
+		txtFEmail = new JTextField();
+		txtFEmail.setFont(new Font("Nirmala UI", Font.PLAIN, 18));
+		txtFEmail.setBounds(232, 167, 235, 29);
+		panelLogin.add(txtFEmail);
+		txtFEmail.setColumns(10);
 
 		txtFContrasena = new JPasswordField();
 		txtFContrasena.setFont(new Font("Nirmala UI", Font.PLAIN, 18));
@@ -55,11 +55,11 @@ public class PanelLogin extends JFrame {
 		txtFContrasena.setBounds(232, 244, 235, 29);
 		panelLogin.add(txtFContrasena);
 
-		JLabel lblNombre = new JLabel("Nombre:");
-		lblNombre.setHorizontalAlignment(SwingConstants.RIGHT);
-		lblNombre.setFont(new Font("Rockwell Condensed", Font.PLAIN, 26));
-		lblNombre.setBounds(80, 169, 142, 22);
-		panelLogin.add(lblNombre);
+		JLabel lblEmail = new JLabel("Email:");
+		lblEmail.setHorizontalAlignment(SwingConstants.RIGHT);
+		lblEmail.setFont(new Font("Rockwell Condensed", Font.PLAIN, 26));
+		lblEmail.setBounds(80, 169, 142, 22);
+		panelLogin.add(lblEmail);
 
 		JLabel lblContrasena = new JLabel("Contraseña:");
 		lblContrasena.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -93,11 +93,11 @@ public class PanelLogin extends JFrame {
 	}
 
 	public JTextField getTxtFNombre() {
-		return txtFNombre;
+		return txtFEmail;
 	}
 
 	public void setTxtFNombre(JTextField txtFNombre) {
-		this.txtFNombre = txtFNombre;
+		this.txtFEmail = txtFNombre;
 	}
 
 	public JTextField getTxtFContrasena() {

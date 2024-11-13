@@ -38,8 +38,20 @@ public class Workout implements Serializable {
 		this.id = id;
 	}
 
+	@Override
+	public String toString() {
+		return "Workout [nivel=" + nivel + ", nombre=" + nombre + ", numEjer=" + numEjer + ", video=" + video
+				+ ", ejercicios=" + ejercicios + ", id=" + id + "]";
+	}
+
 	public Workout() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Workout(String nombre, int nivel) {
+		// TODO Auto-generated constructor stub
+		this.nombre = nombre;
+		this.nivel = nivel;
 	}
 
 	public String getId() {
